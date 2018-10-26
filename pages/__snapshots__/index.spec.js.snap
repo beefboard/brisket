@@ -1,0 +1,10 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`index renders properly 1`] = `
+<section class="container">
+  <div>
+    <logo-stub></logo-stub>
+    <form method="post" class="login"><input type="text" placeholder="Username"> <input type="password" placeholder="Password"> <button>Test</button></form>
+  </div>
+</section>
+`;

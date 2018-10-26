@@ -2,22 +2,20 @@
   <section class="container">
     <div>
       <logo/>
-      <h1 class="title">
-        web
-      </h1>
-      <h2 class="subtitle">
-        Web frontend for beefboard
-      </h2>
-      <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green">Documentation</a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey">GitHub</a>
-      </div>
+      <form
+        method="post"
+        class="login"
+        @submit.prevent="register">
+        <input
+          type="text"
+          v-model="username"
+          placeholder="Username">
+        <input
+          type="password"
+          v-model="password"
+          placeholder="Password">
+        <button>Test</button>
+      </form>
     </div>
   </section>
 </template>
@@ -28,6 +26,17 @@ import Logo from '~/components/Logo.vue'
 export default {
   components: {
     Logo
+  },
+  methods: {
+    async register() {
+      await this.$axios.put('me', {
+        username: this.username,
+        password: this.password
+      })
+    }
+  },
+  data() {
+    return {}
   }
 }
 </script>
@@ -39,6 +48,11 @@ export default {
   justify-content: center;
   align-items: center;
   text-align: center;
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
 }
 
 .title {
