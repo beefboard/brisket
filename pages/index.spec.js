@@ -1,6 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
 import index from './index'
-import axios from '../plugins/axios'
 import flushPromises from 'flush-promises'
 
 jest.mock('axios')
@@ -18,9 +17,7 @@ describe('index', () => {
 
   it('should have username input', () => {
     const wrapper = shallowMount(index)
-    expect(
-      wrapper.html().includes('<input type="text" placeholder="Username">')
-    ).toBeTruthy()
+    expect(wrapper.find('input').attributes('placeholder')).toBe('Username')
   })
 
   it('should accept login', async () => {

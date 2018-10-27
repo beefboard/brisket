@@ -2,20 +2,6 @@
   <section class="container">
     <div>
       <logo/>
-      <form
-        method="post"
-        class="login"
-        @submit.prevent="register">
-        <input
-          type="text"
-          v-model="username"
-          placeholder="Username">
-        <input
-          type="password"
-          v-model="password"
-          placeholder="Password">
-        <button>Test</button>
-      </form>
     </div>
   </section>
 </template>
@@ -24,35 +10,20 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
+  async fetch({ store, params }) {},
   components: {
     Logo
-  },
-  methods: {
-    async register() {
-      await this.$axios.put('me', {
-        username: this.username,
-        password: this.password
-      })
-    }
-  },
-  data() {
-    return {}
   }
 }
 </script>
 
 <style>
 .container {
-  min-height: 100vh;
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   text-align: center;
-}
-
-.login {
-  display: flex;
-  flex-direction: column;
 }
 
 .title {
@@ -71,9 +42,5 @@ export default {
   color: #526488;
   word-spacing: 5px;
   padding-bottom: 15px;
-}
-
-.links {
-  padding-top: 15px;
 }
 </style>

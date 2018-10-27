@@ -1,55 +1,71 @@
 <template>
-  <div>
+  <div class="main-container">
+    <div class="top-bar">
+      <div class="logo">
+        <nuxt-link to="/">Beefboard</nuxt-link>
+      </div>
+      <div class="links">
+        <nuxt-link to="/login" v-if="!$store.state.auth">Login</nuxt-link>
+        <a class="logout" @click="logout" v-if="$store.state.auth">Logout</a>
+      </div>
+    </div>
     <nuxt/>
   </div>
 </template>
 
-<style>
-html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
-  word-spacing: 1px;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-font-smoothing: antialiased;
-  box-sizing: border-box;
+<script>
+export default {
+  methods: {
+    async logout() {
+      await this.$store.dispatch('logout')
+    }
+  }
+}
+</script>
+
+<style scoped>
+.main-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-*,
-*:before,
-*:after {
-  box-sizing: border-box;
-  margin: 0;
+.top-bar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #999;
+  width: 100%;
 }
 
-.button--green {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #3b8070;
-  color: #3b8070;
+.logo > a {
+  font-size: 2rem;
+}
+
+.logout {
+  cursor: pointer;
+}
+
+a {
+  margin-right: 20px;
+  font-size: 14px;
+  color: rgb(61, 61, 61);
   text-decoration: none;
-  padding: 10px 30px;
+  text-transform: uppercase;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  transition: color 0.25s;
+  font-weight: 400;
+  line-height: normal;
 }
-
-.button--green:hover {
-  color: #fff;
-  background-color: #3b8070;
+a:hover {
+  color: #333;
 }
-
-.button--grey {
-  display: inline-block;
-  border-radius: 4px;
-  border: 1px solid #35495e;
-  color: #35495e;
-  text-decoration: none;
-  padding: 10px 30px;
-  margin-left: 15px;
-}
-
-.button--grey:hover {
-  color: #fff;
-  background-color: #35495e;
+.links > a.nuxt-link-active {
+  color: rgb(20, 20, 20);
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  font-weight: 600;
 }
 </style>
