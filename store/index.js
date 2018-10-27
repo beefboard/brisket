@@ -16,7 +16,7 @@ export const actions = {
   // When creating the store, we try
   async nuxtServerInit(store, context) {
     const token = context.app.$cookies.get('AUTH_TOKEN')
-    store.state.token = token
+    store.state.token = token || null
   },
 
   async login({ commit }, data) {
@@ -26,6 +26,8 @@ export const actions = {
     })
     this.$cookies.set('AUTH_TOKEN', response.data.token)
     commit('token', response.data.token)
+
+    await this.dispatch('getAuth')
   },
 
   async getAuth({ commit }) {
@@ -34,7 +36,7 @@ export const actions = {
       const response = await this.$axios.get('/me')
       me = response.data
     } catch (e) {
-      console.log(e.error)
+      console.log(e.message)
       me = null
     }
 
@@ -45,7 +47,7 @@ export const actions = {
     try {
       await this.$axios.delete('/me')
     } catch (e) {
-      console.log(e.error)
+      console.log(e.message)
     }
 
     this.$cookies.set('AUTH_TOKEN', null)

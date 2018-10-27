@@ -1,8 +1,11 @@
 <template>
   <section class="container">
-    <div>
-      <logo/>
-    </div>
+    <nuxt-link to="/posts/new">New story</nuxt-link>
+    <template v-for="post in posts">
+      <div v-bind:key="post">
+        {{ post }}
+      </div>
+    </template>
   </section>
 </template>
 
@@ -10,7 +13,15 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
-  async fetch({ store, params }) {},
+  async asyncData({ store, $axios }) {
+    if (store.state.auth.admin) {
+      return (await $axios.get('/posts', {
+        params: {
+          approved: false
+        }
+      })).data.posts
+    }
+  },
   components: {
     Logo
   }

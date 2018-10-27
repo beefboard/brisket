@@ -1,7 +1,6 @@
 <template>
   <div class="container">
     <form
-      v-if="!$store.state.auth"
       method="post"
       class="login"
       @submit.prevent="login">
@@ -13,27 +12,40 @@
         v-model="password"
         type="password"
         placeholder="Password">
-      <button>Login</button>
+      <button :disabled="loading">Login</button>
     </form>
-    <div>Me: {{ $store.state.auth }}</div>
-    <div>Token: {{ $store.state.token }} </div>
-    <button
-      v-if="$store.state.auth"
-      @click="logout">Logout</button>
   </div>
 </template>
 
 <script>
 export default {
+  data() {
+    return {
+      username: null,
+      password: null,
+      loading: false
+    }
+  },
+  validate({ store, redirect }) {
+    if (store.state.auth) {
+      redirect('/')
+      return false
+    }
+    return true
+  },
   methods: {
     async login() {
+      this.loading = true
       try {
         await this.$store.dispatch('login', {
           username: this.username,
           password: this.password
         })
-        await this.$store.dispatch('getAuth')
-      } catch (e) {}
+        await this.$router.push('/')
+      } catch (e) {
+        this.loading = false
+        console.log('login failed')
+      }
     },
     async logout() {
       try {

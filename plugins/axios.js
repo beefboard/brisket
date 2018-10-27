@@ -3,7 +3,7 @@
  * add our access token to all requests we make via
  * axios
  */
-export default function({ $axios, redirect, store }) {
+export default function({ $axios, store }) {
   $axios.onRequest(config => {
     config.headers['x-access-token'] = store.state.token
   })

@@ -6,6 +6,12 @@
       </div>
       <div class="links">
         <nuxt-link to="/login" v-if="!$store.state.auth">Login</nuxt-link>
+        <nuxt-link to="/register" v-if="!$store.state.auth">Register</nuxt-link>
+        <nuxt-link
+          :to="'/profiles/'+$store.state.auth.username"
+          v-if="$store.state.auth">
+          {{ $store.state.auth.username }}
+        </nuxt-link>
         <a class="logout" @click="logout" v-if="$store.state.auth">Logout</a>
       </div>
     </div>
@@ -18,6 +24,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
+      await this.$router.push('/')
     }
   }
 }
@@ -64,8 +71,6 @@ a:hover {
 }
 .links > a.nuxt-link-active {
   color: rgb(20, 20, 20);
-  border-top: 1px solid #333;
-  border-bottom: 1px solid #333;
   font-weight: 600;
 }
 </style>
