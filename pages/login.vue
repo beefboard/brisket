@@ -4,15 +4,22 @@
       method="post"
       class="login"
       @submit.prevent="login">
-      <input
-        v-model="username"
-        type="text"
-        placeholder="Username">
-      <input
-        v-model="password"
-        type="password"
-        placeholder="Password">
-      <button :disabled="loading">Login</button>
+      <div>
+        <input
+          v-model="username"
+          type="text"
+          placeholder="Username">
+        <input
+          v-model="password"
+          type="password"
+          placeholder="Password">
+        <div class="error" v-if=errorMessage>{{ errorMessage }}</div>
+      </div>
+      <button
+        type="submit"
+        :disabled="loginDisabled">
+        Login
+      </button>
     </form>
   </div>
 </template>
@@ -23,16 +30,23 @@ export default {
     return {
       username: null,
       password: null,
-      loading: false
+      loading: false,
+      errorMessage: ''
     }
   },
+
   async asyncData({ store, redirect }) {
     if (store.state.auth) {
       redirect('/')
     }
   },
+
   methods: {
     async login() {
+      if (this.loginDisabled) {
+        return
+      }
+      this.errorMessage = ''
       this.loading = true
       try {
         await this.$store.dispatch('login', {
@@ -42,8 +56,23 @@ export default {
         await this.$router.push('/')
       } catch (e) {
         this.loading = false
-        console.log(e)
-        console.log('login failed')
+        if (e.response) {
+          if (e.response.status == 401) {
+            this.errorMessage = 'Invalid username or password'
+          } else if (e.response.status == 500) {
+            this.errorMessage = 'Server error'
+          }
+        } else {
+          this.errorMessage = 'Unknown error'
+        }
+      }
+    }
+  },
+
+  computed: {
+    loginDisabled: {
+      get() {
+        return !this.username || !this.password || this.loading
       }
     }
   }

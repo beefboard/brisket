@@ -32,10 +32,7 @@ describe('store', () => {
     beforeEach(() => {
       mockCookiesStore = {}
       mockStore = new Vuex.Store({
-        state: {
-          token: null,
-          auth: null
-        },
+        state: store.state(),
         mutations: store.mutations,
         actions: store.actions
       })
@@ -62,6 +59,13 @@ describe('store', () => {
 
         await store.actions.nuxtServerInit(mockStore, mockContext)
         expect(mockStore.state.token).toBe('token')
+      })
+
+      it('should store null if cookie is empty', async () => {
+        mockCookiesStore['AUTH_TOKEN'] = undefined
+
+        await store.actions.nuxtServerInit(mockStore, mockContext)
+        expect(mockStore.state.token).toBe(null)
       })
     })
 
@@ -99,20 +103,11 @@ describe('store', () => {
     })
 
     describe('logout', () => {
-      it('should request logout from api', async () => {
+      it('should request logout from api and clear session', async () => {
         axios.delete.mockResolvedValue({ data: { success: true } })
         await mockStore.dispatch('logout')
 
         expect(axios.delete).toHaveBeenCalledWith('/me')
-      })
-
-      it('should clear session', async () => {
-        axios.delete.mockResolvedValue({ data: { success: true } })
-        mockCookiesStore['AUTH_TOKEN'] = 'mytoken'
-        mockStore.state.token = 'mytoken'
-
-        await mockStore.dispatch('logout')
-
         expect(mockCookiesStore['AUTH_TOKEN']).toBe(null)
         expect(mockStore.state.auth).toBe(null)
         expect(mockStore.state.token).toBe(null)
@@ -135,60 +130,65 @@ describe('store', () => {
           password: 'test'
         }
         await mockStore.dispatch('register', details)
-
         expect(axios.post).toHaveBeenCalledWith('/accounts', details)
       })
     })
 
     describe('getUser', () => {
-      it('should return details', async () => {
+      it('should get given user details from api', async () => {
         const mockDetails = {
           username: 'test',
           firstName: 'test'
         }
         axios.get.mockResolvedValue({ data: mockDetails })
 
-        const username = 'test'
-        const details = await mockStore.dispatch('getUser', username)
+        const details = await mockStore.dispatch('getUser', 'test')
 
         expect(details).toBe(mockDetails)
-      })
-
-      it('should request details of given user', async () => {
-        const mockDetails = {
-          username: 'test',
-          firstName: 'test'
-        }
-        axios.get.mockResolvedValue({ data: mockDetails })
-
-        await mockStore.dispatch('getUser', 'test')
-
         expect(axios.get).toHaveBeenCalledWith('/accounts/test')
+
+        axios.get.mockReset()
+        axios.get.mockResolvedValue({ data: mockDetails })
+        await mockStore.dispatch('getUser', 'test1')
+        expect(axios.get).toHaveBeenCalledWith('/accounts/test1')
       })
     })
 
     describe('getPosts', () => {
-      it('should request from posts api', async () => {
+      it('should request posts from posts api with the provided perams', async () => {
+        let mockPosts = [
+          {
+            title: 'test',
+            content: 'test'
+          }
+        ]
         axios.get.mockResolvedValue({
           data: {
-            posts: []
+            posts: mockPosts
           }
         })
 
-        await mockStore.dispatch('getPosts', {})
-        expect(axios.get).toHaveBeenCalledWith('/posts', { params: {} })
+        const filter = { approved: true }
+
+        const posts = await mockStore.dispatch('getPosts', filter)
+        expect(axios.get).toHaveBeenCalledWith('/posts', { params: filter })
+        expect(posts).toBe(mockPosts)
       })
-      it('should return posts', async () => {
-        const mockDetails = {
-          username: 'test',
-          firstName: 'test'
+    })
+
+    describe('getPost', () => {
+      it('should get the post with the given id', async () => {
+        const mockPost = {
+          title: 'test',
+          content: 'test'
         }
-        axios.get.mockResolvedValue({ data: mockDetails })
+        axios.get.mockResolvedValue({
+          data: mockPost
+        })
 
-        const username = 'test'
-        const details = await mockStore.dispatch('getUser', username)
-
-        expect(details).toBe(mockDetails)
+        const post = await mockStore.dispatch('getPost', 'test')
+        expect(post).toBe(mockPost)
+        expect(axios.get).toHaveBeenCalledWith('/posts/test')
       })
     })
   })

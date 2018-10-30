@@ -33,7 +33,7 @@ describe('index', () => {
 
   it('should render posts from api', () => {
     mockData = {
-      posts: [{ title: 'Test post', content: 'test', author: 'cunt' }]
+      posts: [{ title: 'Test post', content: 'test', author: 'me' }]
     }
     const wrapper = shallowMount(index, { data })
     const posts = wrapper.find('.posts')
@@ -42,7 +42,7 @@ describe('index', () => {
 
   it('should render data into post', () => {
     mockData = {
-      posts: [{ title: 'Test post', content: 'test', author: 'cunt' }]
+      posts: [{ title: 'Test post', content: 'test', author: 'me' }]
     }
     const wrapper = shallowMount(index, { data })
     const post = wrapper.find('.post')

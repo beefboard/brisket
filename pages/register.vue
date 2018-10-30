@@ -86,9 +86,11 @@ export default {
         console.log('Registration error')
       }
     },
+
     checkEmail() {
       this.validEmail = emailValidator.validate(this.email)
     },
+
     checkUsername() {
       clearTimeout(this.timeout)
 

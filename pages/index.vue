@@ -17,19 +17,11 @@
 </template>
 
 <script>
-import Logo from '~/components/Logo.vue'
-
 export default {
   async asyncData({ store }) {
-    if (store.state.auth && store.state.auth.admin) {
-      return {
-        posts: await store.dispatch('getPosts')
-      }
+    return {
+      posts: await store.dispatch('getPosts')
     }
-  },
-  async mounted() {},
-  components: {
-    Logo
   }
 }
 </script>
