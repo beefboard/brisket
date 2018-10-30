@@ -54,20 +54,20 @@ export const actions = {
   },
 
   /**
-   * Perform registration on the api, with the given
-   * login details
-   */
-  async register(_, details) {
-    await this.$axios.post('/accounts', details)
-  },
-
-  /**
    * Try and refresh our current auth details, storing
    * them in auth
    */
   async refreshAuth({ commit }) {
     const response = await this.$axios.get('/me', { progress: false })
     commit('auth', response.data)
+  },
+
+  /**
+   * Perform registration on the api, with the given
+   * login details
+   */
+  async register(_, details) {
+    await this.$axios.post('/accounts', details)
   },
 
   /**

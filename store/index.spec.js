@@ -48,6 +48,13 @@ describe('store', () => {
         }
       }
     })
+    afterEach(() => {
+      // Reset axios mocks
+      axios.get.mockClear()
+      axios.post.mockClear()
+      axios.delete.mockClear()
+      axios.put.mockClear()
+    })
 
     describe('nuxtServerInit', () => {
       it('should read token from cookies on init', async () => {
@@ -69,34 +76,16 @@ describe('store', () => {
         expect(mockCookiesStore['AUTH_TOKEN']).toBe('testtoken')
         expect(mockStore.state.token).toBe('testtoken')
       })
-
-      it('should throw error on bad credentials', async () => {
-        axios.put.mockImplementation(async () => {
-          throw new Error('test error')
-        })
-
-        let threw = false
-        try {
-          await mockStore.dispatch('login', {
-            username: 'test',
-            password: 'test'
-          })
-        } catch (e) {
-          threw = true
-        }
-
-        expect(threw).toBe(true)
-      })
     })
 
     describe('refreshAuth', () => {
-      it('should request auth details', async () => {
+      it('should request auth details from api, with progress disabled', async () => {
         const mockAuth = { username: 'test', firstName: 'test' }
         axios.get.mockResolvedValue({ data: mockAuth })
 
         await mockStore.dispatch('refreshAuth')
 
-        expect(axios.get).toHaveBeenCalled()
+        expect(axios.get).toHaveBeenCalledWith('/me', { progress: false })
       })
 
       it('should save auth details in state', async () => {
@@ -107,21 +96,6 @@ describe('store', () => {
 
         expect(mockStore.state.auth).toBe(mockAuth)
       })
-
-      it('should throw an error on failure to retreive details', async () => {
-        axios.get.mockImplementation(async () => {
-          throw new Error('test error')
-        })
-
-        let threw = false
-        try {
-          await mockStore.dispatch('refreshAuth')
-        } catch (e) {
-          threw = true
-        }
-
-        expect(threw).toBe(true)
-      })
     })
 
     describe('logout', () => {
@@ -129,7 +103,7 @@ describe('store', () => {
         axios.delete.mockResolvedValue({ data: { success: true } })
         await mockStore.dispatch('logout')
 
-        expect(axios.delete).toHaveBeenCalled()
+        expect(axios.delete).toHaveBeenCalledWith('/me')
       })
 
       it('should clear session', async () => {
@@ -149,6 +123,72 @@ describe('store', () => {
           throw new Error('test error')
         })
         await mockStore.dispatch('logout')
+      })
+    })
+
+    describe('register', () => {
+      it('should send details to registration api', async () => {
+        axios.post.mockResolvedValue({ data: { success: true } })
+
+        const details = {
+          username: 'test',
+          password: 'test'
+        }
+        await mockStore.dispatch('register', details)
+
+        expect(axios.post).toHaveBeenCalledWith('/accounts', details)
+      })
+    })
+
+    describe('getUser', () => {
+      it('should return details', async () => {
+        const mockDetails = {
+          username: 'test',
+          firstName: 'test'
+        }
+        axios.get.mockResolvedValue({ data: mockDetails })
+
+        const username = 'test'
+        const details = await mockStore.dispatch('getUser', username)
+
+        expect(details).toBe(mockDetails)
+      })
+
+      it('should request details of given user', async () => {
+        const mockDetails = {
+          username: 'test',
+          firstName: 'test'
+        }
+        axios.get.mockResolvedValue({ data: mockDetails })
+
+        await mockStore.dispatch('getUser', 'test')
+
+        expect(axios.get).toHaveBeenCalledWith('/accounts/test')
+      })
+    })
+
+    describe('getPosts', () => {
+      it('should request from posts api', async () => {
+        axios.get.mockResolvedValue({
+          data: {
+            posts: []
+          }
+        })
+
+        await mockStore.dispatch('getPosts', {})
+        expect(axios.get).toHaveBeenCalledWith('/posts', { params: {} })
+      })
+      it('should return posts', async () => {
+        const mockDetails = {
+          username: 'test',
+          firstName: 'test'
+        }
+        axios.get.mockResolvedValue({ data: mockDetails })
+
+        const username = 'test'
+        const details = await mockStore.dispatch('getUser', username)
+
+        expect(details).toBe(mockDetails)
       })
     })
   })

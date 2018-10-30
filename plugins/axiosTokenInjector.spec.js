@@ -17,10 +17,7 @@ describe('axiosTokenInjector', () => {
   it('should add hook to onRequest', () => {
     mockAxios.onRequest = jest.fn()
     axiosTokenInjector({ $axios: mockAxios, store: mockStore })
-    expect(mockAxios.onRequest).toHaveBeenCalled()
-
-    const requestHook = mockAxios.onRequest.mock.calls[0][0]
-    expect(requestHook).toEqual(expect.any(Function))
+    expect(mockAxios.onRequest).toHaveBeenCalledWith(expect.any(Function))
   })
 
   test('hook should add token from store to config headers', () => {
