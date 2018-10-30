@@ -26,12 +26,10 @@ export default {
       loading: false
     }
   },
-  validate({ store, redirect }) {
+  async asyncData({ store, redirect }) {
     if (store.state.auth) {
       redirect('/')
-      return false
     }
-    return true
   },
   methods: {
     async login() {
@@ -44,13 +42,9 @@ export default {
         await this.$router.push('/')
       } catch (e) {
         this.loading = false
+        console.log(e)
         console.log('login failed')
       }
-    },
-    async logout() {
-      try {
-        await this.$store.dispatch('logout')
-      } catch (e) {}
     }
   }
 }

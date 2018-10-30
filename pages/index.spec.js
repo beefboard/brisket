@@ -1,28 +1,51 @@
+import VueTestUtils from '@vue/test-utils'
 import { shallowMount } from '@vue/test-utils'
 import index from './index'
-import flushPromises from 'flush-promises'
 
-jest.mock('axios')
+VueTestUtils.config.stubs['nuxt-link'] = '<a><slot /></a>'
 
 describe('index', () => {
+  let mockData
+  const data = () => {
+    return mockData
+  }
+
+  beforeAll(() => {
+    mockData = {
+      posts: []
+    }
+  })
+
   test('mounts properly', () => {
-    const wrapper = shallowMount(index)
+    const wrapper = shallowMount(index, { data })
     expect(wrapper.isVueInstance()).toBeTruthy()
   })
 
   test('renders properly', () => {
-    const wrapper = shallowMount(index)
+    const wrapper = shallowMount(index, { data })
     expect(wrapper.html()).toMatchSnapshot()
   })
 
-  it('should have username input', () => {
-    const wrapper = shallowMount(index)
-    expect(wrapper.find('input').attributes('placeholder')).toBe('Username')
+  it('should show posts', () => {
+    const wrapper = shallowMount(index, { data })
+    expect(wrapper.find('.posts').exists()).toBe(true)
   })
 
-  it('should accept login', async () => {
-    const wrapper = shallowMount(index)
-    wrapper.find('button').trigger('click')
-    await flushPromises()
+  it('should render posts from api', () => {
+    mockData = {
+      posts: [{ title: 'Test post', content: 'test', author: 'cunt' }]
+    }
+    const wrapper = shallowMount(index, { data })
+    const posts = wrapper.find('.posts')
+    expect(posts.findAll('.post').length).toBe(1)
+  })
+
+  it('should render data into post', () => {
+    mockData = {
+      posts: [{ title: 'Test post', content: 'test', author: 'cunt' }]
+    }
+    const wrapper = shallowMount(index, { data })
+    const post = wrapper.find('.post')
+    expect(post.html()).toBeTruthy()
   })
 })

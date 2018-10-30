@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`layout renders properly 1`] = `
+<div class="main-container">
+  <div class="top-bar">
+    <div class="logo"><a to="/">Beefboard</a></div>
+    <div class="links">
+      <!---->
+      <!----> <a to="/profiles/test">
+        test
+      </a> <a class="logout">Logout</a></div>
+  </div>
+  <div></div>
+</div>
+`;

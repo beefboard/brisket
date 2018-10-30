@@ -3,7 +3,7 @@
     <form @submit.prevent="register">
       <input
         v-model="username"
-        v-bind:class="{ bad: !validUser }"
+        v-bind:class="{ bad: !validUser || usernameTaken }"
         @keyup="checkUsername"
         type="text"
         placeholder="Username">
@@ -50,9 +50,11 @@ export default {
       loading: false,
       timeout: null,
       validEmail: true,
-      validUser: true
+      validUser: true,
+      usernameTaken: false
     }
   },
+
   validate({ store, redirect }) {
     if (store.state.auth) {
       redirect('/')
@@ -60,11 +62,13 @@ export default {
     }
     return true
   },
+
   methods: {
     async register() {
       this.loading = true
       try {
-        await this.$axios.post('/accounts', {
+        // register the account, and then login
+        await this.$store.dispatch('register', {
           username: this.username,
           password: this.password,
           email: this.email,
@@ -78,27 +82,33 @@ export default {
         await this.$router.push('/')
       } catch (e) {
         this.loading = false
-        console.log(e)
-        console.log('registration error')
+        console.log(e.message)
+        console.log('Registration error')
       }
     },
     checkEmail() {
       this.validEmail = emailValidator.validate(this.email)
     },
     checkUsername() {
+      clearTimeout(this.timeout)
+
       if (!this.username) {
         return
       }
-      clearTimeout(this.timeout)
+
+      this.validUser = true
+      if (this.username.indexOf(' ') > -1) {
+        this.validUser = false
+        return
+      }
+
       this.timeout = setTimeout(async () => {
         try {
-          await this.$axios.get(`/accounts/${this.username}`, {
-            progress: false
-          })
-          this.validUser = false
+          await this.$store.dispatch('getUser', this.username)
+          this.usernameTaken = true
         } catch (e) {
           if (e.response && e.response.status == 404) {
-            this.validUser = true
+            this.usernameTaken = false
           }
         }
       }, 500)
@@ -126,10 +136,14 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
-
 input {
   animation: linear 0.3s ease-in-out;
 }

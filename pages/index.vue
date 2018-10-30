@@ -1,11 +1,18 @@
 <template>
   <section class="container">
     <nuxt-link to="/posts/new">New story</nuxt-link>
-    <template v-for="post in posts">
-      <div v-bind:key="post">
-        {{ post }}
-      </div>
-    </template>
+    <div class="posts">
+      <nuxt-link
+        :to="'/posts/' + post.id"
+        v-for="(post, index) of posts"
+        v-bind:key="index">
+        <div class="post">
+          <div class="title">{{ post.title }}</div>
+          <div class="content">{{ post.content }}</div>
+          <div class="author">{{ post.author }}</div>
+        </div>
+      </nuxt-link>
+    </div>
   </section>
 </template>
 
@@ -13,45 +20,35 @@
 import Logo from '~/components/Logo.vue'
 
 export default {
-  async asyncData({ store, $axios }) {
-    if (store.state.auth.admin) {
-      return (await $axios.get('/posts', {
-        params: {
-          approved: false
-        }
-      })).data.posts
+  async asyncData({ store }) {
+    if (store.state.auth && store.state.auth.admin) {
+      return {
+        posts: await store.dispatch('getPosts')
+      }
     }
   },
+  async mounted() {},
   components: {
     Logo
   }
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
 }
 
-.title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-  display: block;
-  font-weight: 300;
-  font-size: 100px;
-  color: #35495e;
-  letter-spacing: 1px;
+.post {
+  width: 5rem;
+  border: black;
 }
 
-.subtitle {
-  font-weight: 300;
-  font-size: 42px;
-  color: #526488;
-  word-spacing: 5px;
-  padding-bottom: 15px;
+.post > .a {
 }
 </style>

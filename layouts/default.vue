@@ -5,14 +5,14 @@
         <nuxt-link to="/">Beefboard</nuxt-link>
       </div>
       <div class="links">
-        <nuxt-link to="/login" v-if="!$store.state.auth">Login</nuxt-link>
-        <nuxt-link to="/register" v-if="!$store.state.auth">Register</nuxt-link>
+        <nuxt-link to="/login" v-if="!auth">Login</nuxt-link>
+        <nuxt-link to="/register" v-if="!auth">Register</nuxt-link>
         <nuxt-link
-          :to="'/profiles/'+$store.state.auth.username"
-          v-if="$store.state.auth">
-          {{ $store.state.auth.username }}
+          :to="'/profiles/'+auth.username"
+          v-if="auth">
+          {{ auth.username }}
         </nuxt-link>
-        <a class="logout" @click="logout" v-if="$store.state.auth">Logout</a>
+        <a class="logout" @click="logout" v-if="auth">Logout</a>
       </div>
     </div>
     <nuxt/>
@@ -25,6 +25,11 @@ export default {
     async logout() {
       await this.$store.dispatch('logout')
       await this.$router.push('/')
+    }
+  },
+  computed: {
+    auth() {
+      return this.$store.state.auth
     }
   }
 }
@@ -42,11 +47,13 @@ export default {
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-  background-color: #999;
+  background-color: rgb(223, 223, 223);
   width: 100%;
+  height: 4rem;
 }
 
 .logo > a {
+  padding: 1rem;
   font-size: 2rem;
 }
 

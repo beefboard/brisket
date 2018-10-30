@@ -1,11 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`index renders properly 1`] = `
-<section class="container">
-  <div>
-    <logo-stub></logo-stub>
-    <form method="post" class="login"><input type="text" placeholder="Username"> <input type="password" placeholder="Password"> <button>Login</button></form>
-    <div> Token: </div>
-  </div>
+<section class="container"><a to="/posts/new">New story</a>
+  <div class="posts"></div>
 </section>
 `;

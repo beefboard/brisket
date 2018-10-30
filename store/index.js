@@ -13,45 +13,84 @@ export const mutations = {
 }
 
 export const actions = {
-  // When creating the store, we try
+  // When creating the store, we try to retreive the current
+  // auth token from our cookies, and place it in the store
+  // state
   async nuxtServerInit(store, context) {
     const token = context.app.$cookies.get('AUTH_TOKEN')
     store.state.token = token || null
   },
 
-  async login({ commit }, data) {
-    const response = await this.$axios.put('/me', {
-      username: data.username,
-      password: data.password
-    })
-    this.$cookies.set('AUTH_TOKEN', response.data.token)
-    commit('token', response.data.token)
-
-    await this.dispatch('getAuth')
-  },
-
-  async getAuth({ commit }) {
-    let me
-    try {
-      const response = await this.$axios.get('/me')
-      me = response.data
-    } catch (e) {
-      console.log(e.message)
-      me = null
-    }
-
-    commit('auth', me)
-  },
-
-  async logout({ commit }) {
-    try {
-      await this.$axios.delete('/me')
-    } catch (e) {
-      console.log(e.message)
-    }
-
+  /**
+   * Clear the current session
+   */
+  clearSession({ commit }) {
     this.$cookies.set('AUTH_TOKEN', null)
     commit('token', null)
     commit('auth', null)
+  },
+
+  /**
+   * Perform login, with the given login details.
+   *
+   * Throws error on failure. On success token will be
+   * stored
+   */
+  async login({ commit }, details) {
+    const response = await this.$axios.put('/me', details)
+    this.$cookies.set('AUTH_TOKEN', response.data.token)
+    commit('token', response.data.token)
+  },
+
+  /**
+   * Perform logout. After informing server,
+   * clear session details from our cookie and store
+   */
+  async logout() {
+    try {
+      await this.$axios.delete('/me')
+    } catch (_) {}
+    this.dispatch('clearSession')
+  },
+
+  /**
+   * Perform registration on the api, with the given
+   * login details
+   */
+  async register(_, details) {
+    await this.$axios.post('/accounts', details)
+  },
+
+  /**
+   * Try and refresh our current auth details, storing
+   * them in auth
+   */
+  async refreshAuth({ commit }) {
+    const response = await this.$axios.get('/me', { progress: false })
+    commit('auth', response.data)
+  },
+
+  /**
+   * Get details of the given user with id
+   */
+  async getUser(_, id) {
+    const response = await this.$axios.get(`/accounts/${id}`)
+    return response.data
+  },
+
+  /**
+   * Get posts with the given query
+   */
+  async getPosts(_, filter) {
+    const response = await this.$axios.get('/posts', {
+      params: filter
+    })
+
+    return response.data.posts
+  },
+
+  async getPost(_, id) {
+    const response = await this.$axios.get(`/posts/${id}`)
+    return response.data
   }
 }

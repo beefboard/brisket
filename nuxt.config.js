@@ -7,7 +7,7 @@ module.exports = {
   ** Headers of the page
   */
   head: {
-    title: pkg.name,
+    title: 'Beefboard',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -29,7 +29,7 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['~/plugins/axios'],
+  plugins: ['~/plugins/axiosToken'],
 
   /*
   ** Nuxt.js modules
@@ -46,6 +46,9 @@ module.exports = {
     baseURL: 'https://api.beefboard.mooo.com/v1/'
   },
 
+  /**
+   * Always call the auth middleware on nagivation
+   */
   router: {
     middleware: 'auth'
   },

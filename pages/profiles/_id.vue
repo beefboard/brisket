@@ -31,9 +31,9 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
-  margin: 1rem;
+  height: 100%;
   display: flex;
   align-content: center;
   align-items: center;

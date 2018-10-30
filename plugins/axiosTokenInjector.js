@@ -5,8 +5,8 @@
  */
 export default function({ $axios, store }) {
   $axios.onRequest(config => {
-    config.headers['x-access-token'] = store.state.token
+    if (store.state.token) {
+      config.headers['x-access-token'] = store.state.token
+    }
   })
-
-  $axios.onError(error => {})
 }
