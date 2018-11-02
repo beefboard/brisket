@@ -43,7 +43,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL: 'https://api.beefboard.mooo.com/v1/'
+    baseURL: process.env.API_URL || 'https://api.beefboard.mooo.com/v1/'
   },
 
   /**

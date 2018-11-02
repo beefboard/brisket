@@ -1,5 +1,6 @@
 <template>
   <div class="container">
+    <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
     <form @submit.prevent="register">
       <input
         v-model="username"
@@ -49,7 +50,8 @@ export default {
       loading: false,
       timeout: null,
       validUser: true,
-      usernameTaken: false
+      usernameTaken: false,
+      errorMessage: null
     }
   },
 
@@ -95,6 +97,7 @@ export default {
       }
 
       this.loading = true
+      this.errorMessage = null
       try {
         // register the account, and then login
         await this.$store.dispatch('register', {
@@ -111,14 +114,19 @@ export default {
         await this.$router.push('/')
       } catch (e) {
         this.loading = false
-        console.log(e.message)
-        console.log('Registration error')
+        if (e.response && e.response.status) {
+          if (e.response.status == 500) {
+            this.errorMessage = 'Server error'
+          } else {
+            this.errorMessage = 'Unknown error'
+          }
+        } else {
+          this.errorMessage = 'Connection error'
+        }
       }
     },
 
-    checkUsername() {
-      clearTimeout(this.timeout)
-
+    async checkUsername() {
       if (!this.username) {
         return
       }
@@ -127,23 +135,24 @@ export default {
         return
       }
 
-      this.timeout = setTimeout(async () => {
-        const username = this.username
-        try {
-          await this.$store.dispatch('getUser', username)
+      const username = this.username
+      await new Promise(resolve => setTimeout(resolve, 100))
+      if (this.username != username) {
+        return
+      }
+
+      try {
+        await this.$store.dispatch('getUser', username)
+        if (this.username == username) {
+          this.usernameTaken = true
+        }
+      } catch (e) {
+        if (e.response && e.response.status == 404) {
           if (this.username == username) {
-            this.usernameTaken = true
-          }
-        } catch (e) {
-          if (e.response && e.response.status == 404) {
-            if (this.username == username) {
-              this.usernameTaken = false
-            }
-          } else {
-            console.error(e)
+            this.usernameTaken = false
           }
         }
-      }, 100)
+      }
     }
   }
 }

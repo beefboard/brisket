@@ -176,17 +176,20 @@ describe('login', () => {
     expect(wrapper.vm.loading).toBe(false)
   })
 
-  test('form submit should send data to register, login, and navigate to home', async () => {
+  test('form submit should disable button, send data to register, login, and navigate to home', async () => {
     const wrapper = shallowMount(register, {
       mocks: {
-        $store: mockStore
+        $store: {
+          dispatch: jest.fn()
+        },
+        $router: {
+          push: jest.fn()
+        }
       }
     })
     const form = wrapper.find('form')
 
     const button = form.find('button')
-    expect(button.attributes('disabled')).toBe('disabled')
-
     form.find('[placeholder="Username"]').setValue('username')
     form.find('[placeholder="Username"]').trigger('keyup', { key: 1 })
 
@@ -199,14 +202,86 @@ describe('login', () => {
     form.find('[placeholder="Password"]').setValue('password')
     form.find('[placeholder="Retype password"]').setValue('password')
     form.find('[placeholder="Email"]').setValue('email@email.com')
-    form.find('[placeholder="First name"]').setValue('name')
-    form.find('[placeholder="Last name"]').setValue('name')
+    form.find('[placeholder="First name"]').setValue('name1')
+    form.find('[placeholder="Last name"]').setValue('name2')
 
     form.trigger('submit')
+    expect(button.attributes('disabled')).toBe('disabled')
 
-    const a = 1
+    await flushPromises()
 
-    if (5 === a) {
+    expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('register', {
+      username: 'username',
+      password: 'password',
+      email: 'email@email.com',
+      firstName: 'name1',
+      lastName: 'name2'
+    })
+
+    expect(wrapper.vm.$store.dispatch).toHaveBeenCalledWith('login', {
+      username: 'username',
+      password: 'password'
+    })
+
+    expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/')
+  })
+
+  test('registration submission errors should not navigate, and should display error', async () => {
+    let mockError = {
+      response: {
+        status: 500
+      }
     }
+    const wrapper = shallowMount(register, {
+      mocks: {
+        $store: {
+          dispatch: async () => {
+            throw mockError
+          }
+        },
+        $router: {
+          push: jest.fn()
+        }
+      }
+    })
+    const form = wrapper.find('form')
+
+    const button = form.find('button')
+    form.find('[placeholder="Username"]').setValue('username')
+    form.find('[placeholder="Username"]').trigger('keyup', { key: 1 })
+
+    // Wait a second for the check to be triggered
+    await new Promise(resolve => {
+      setTimeout(resolve, 100)
+    })
+    await flushPromises()
+
+    form.find('[placeholder="Password"]').setValue('password')
+    form.find('[placeholder="Retype password"]').setValue('password')
+    form.find('[placeholder="Email"]').setValue('email@email.com')
+    form.find('[placeholder="First name"]').setValue('name1')
+    form.find('[placeholder="Last name"]').setValue('name2')
+
+    form.trigger('submit')
+    expect(button.attributes('disabled')).toBe('disabled')
+
+    await flushPromises()
+
+    expect(wrapper.vm.$router.push).not.toHaveBeenCalled()
+    expect(wrapper.find('.error').html()).toContain('Server error')
+
+    mockError = {
+      response: {
+        status: 422
+      }
+    }
+    form.trigger('submit')
+    await flushPromises()
+    expect(wrapper.find('.error').html()).toContain('Unknown error')
+
+    mockError = new Error('Random error')
+    form.trigger('submit')
+    await flushPromises()
+    expect(wrapper.find('.error').html()).toContain('Connection error')
   })
 })
