@@ -1,8 +1,14 @@
 <template>
   <div>
     <form @submit.prevent="post">
-      <input v-model="title" type="text" placeholder="Title">
-      <input v-model="content" type="text" placeholder="Content">
+      <input 
+        v-model="title" 
+        type="text" 
+        placeholder="Title">
+      <input 
+        v-model="content" 
+        type="text" 
+        placeholder="Content">
       <button>Submit</button>
     </form>
   </div>

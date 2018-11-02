@@ -1,7 +1,9 @@
 <template>
   <div class="container">
     <div class="title">{{ title }}</div>
-    <nuxt-link class="author" :to="'/profiles/' + author">{{ author }}</nuxt-link>
+    <nuxt-link 
+      :to="'/profiles/' + author" 
+      class="author">{{ author }}</nuxt-link>
     <div class="content">{{ content }}</div>
   </div>
 </template>

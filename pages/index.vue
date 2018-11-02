@@ -3,9 +3,9 @@
     <nuxt-link to="/posts/new">New story</nuxt-link>
     <div class="posts">
       <nuxt-link
-        :to="'/posts/' + post.id"
         v-for="(post, index) of posts"
-        v-bind:key="index">
+        :to="'/posts/' + post.id"
+        :key="index">
         <div class="post">
           <div class="title">{{ post.title }}</div>
           <div class="content">{{ post.content }}</div>
@@ -18,9 +18,13 @@
 
 <script>
 export default {
-  async asyncData({ store }) {
-    return {
-      posts: await store.dispatch('getPosts')
+  async asyncData({ store, error }) {
+    try {
+      return {
+        posts: await store.dispatch('getPosts')
+      }
+    } catch (e) {
+      error('Error loading posts')
     }
   }
 }

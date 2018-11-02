@@ -13,11 +13,13 @@
           v-model="password"
           type="password"
           placeholder="Password">
-        <div class="error" v-if=errorMessage>{{ errorMessage }}</div>
+        <div 
+          v-if="errorMessage" 
+          class="error">{{ errorMessage }}</div>
       </div>
       <button
-        type="submit"
-        :disabled="loginDisabled">
+        :disabled="loginDisabled"
+        type="submit">
         Login
       </button>
     </form>
@@ -38,6 +40,14 @@ export default {
   async asyncData({ store, redirect }) {
     if (store.state.auth) {
       redirect('/')
+    }
+  },
+
+  computed: {
+    loginDisabled: {
+      get() {
+        return !this.username || !this.password || this.loading
+      }
     }
   },
 
@@ -65,14 +75,6 @@ export default {
         } else {
           this.errorMessage = 'Unknown error'
         }
-      }
-    }
-  },
-
-  computed: {
-    loginDisabled: {
-      get() {
-        return !this.username || !this.password || this.loading
       }
     }
   }

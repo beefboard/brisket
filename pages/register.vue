@@ -3,24 +3,23 @@
     <form @submit.prevent="register">
       <input
         v-model="username"
-        v-bind:class="{ bad: !validUser || usernameTaken }"
-        @keyup="checkUsername"
+        :class="{ bad: invalidUser || usernameTaken }"
         type="text"
-        placeholder="Username">
+        placeholder="Username"
+        @keyup="checkUsername">
       <input
         v-model="password"
-        v-bind:class="{ bad: password && password2 && password != password2 }"
+        :class="{ bad: badPasswords }"
         type="password"
         placeholder="Password">
       <input
         v-model="password2"
-        v-bind:class="{ bad: password && password2 && password != password2 }"
+        :class="{ bad: badPasswords }"
         type="password"
         placeholder="Retype password">
       <input
         v-model="email"
-        v-bind:class="{ bad: !validEmail }"
-        @keyup="checkEmail"
+        :class="{ bad: invalidEmail }"
         type="text"
         placeholder="Email">
       <input
@@ -49,7 +48,6 @@ export default {
       email: null,
       loading: false,
       timeout: null,
-      validEmail: true,
       validUser: true,
       usernameTaken: false
     }
@@ -62,9 +60,40 @@ export default {
     }
     return true
   },
+  computed: {
+    validForm() {
+      return (
+        this.username &&
+        !this.invalidUser &&
+        this.password &&
+        this.password2 &&
+        !this.badPasswords &&
+        !this.invalidEmail &&
+        this.email &&
+        this.firstName &&
+        this.lastName
+      )
+    },
+
+    badPasswords() {
+      return this.password && this.password2 && this.password != this.password2
+    },
+
+    invalidEmail() {
+      return this.email && !emailValidator.validate(this.email)
+    },
+
+    invalidUser() {
+      return this.username && this.username.indexOf(' ') > -1
+    }
+  },
 
   methods: {
     async register() {
+      if (!this.validForm) {
+        return
+      }
+
       this.loading = true
       try {
         // register the account, and then login
@@ -87,10 +116,6 @@ export default {
       }
     },
 
-    checkEmail() {
-      this.validEmail = emailValidator.validate(this.email)
-    },
-
     checkUsername() {
       clearTimeout(this.timeout)
 
@@ -98,41 +123,27 @@ export default {
         return
       }
 
-      this.validUser = true
-      if (this.username.indexOf(' ') > -1) {
-        this.validUser = false
+      if (this.invalidUser) {
         return
       }
 
       this.timeout = setTimeout(async () => {
+        const username = this.username
         try {
-          await this.$store.dispatch('getUser', this.username)
-          this.usernameTaken = true
+          await this.$store.dispatch('getUser', username)
+          if (this.username == username) {
+            this.usernameTaken = true
+          }
         } catch (e) {
           if (e.response && e.response.status == 404) {
-            this.usernameTaken = false
+            if (this.username == username) {
+              this.usernameTaken = false
+            }
+          } else {
+            console.error(e)
           }
         }
-      }, 500)
-    }
-  },
-  computed: {
-    validForm() {
-      if (
-        !this.username ||
-        !this.password ||
-        !this.email ||
-        !this.firstName ||
-        !this.lastName
-      ) {
-        return false
-      }
-
-      if (!this.validUser || !this.validEmail) {
-        return false
-      }
-
-      return true
+      }, 100)
     }
   }
 }
