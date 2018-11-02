@@ -48,7 +48,7 @@
     "vuex": "^3.0.1"
   },
   "husky": {
-    "pre-commit": "lint-staged"
+    "precommit": "lint-staged"
   },
   "lint-staged": {
     "*.js,*.vue": [
