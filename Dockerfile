@@ -11,7 +11,7 @@ FROM node:10
 
 WORKDIR /beefboard-web
 
-ENV NODE_ENV='production'
+ENV NODE_ENV=production
 
 COPY package-lock.json package.json ./
 RUN npm install
