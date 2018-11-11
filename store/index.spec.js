@@ -130,7 +130,7 @@ describe('store', () => {
           password: 'test'
         }
         await mockStore.dispatch('register', details)
-        expect(axios.post).toHaveBeenCalledWith('/accounts', details)
+        expect(axios.post).toHaveBeenCalledWith('/v1/accounts', details)
       })
     })
 
@@ -145,12 +145,12 @@ describe('store', () => {
         const details = await mockStore.dispatch('getUser', 'test')
 
         expect(details).toBe(mockDetails)
-        expect(axios.get).toHaveBeenCalledWith('/accounts/test')
+        expect(axios.get).toHaveBeenCalledWith('/v1/accounts/test')
 
         axios.get.mockReset()
         axios.get.mockResolvedValue({ data: mockDetails })
         await mockStore.dispatch('getUser', 'test1')
-        expect(axios.get).toHaveBeenCalledWith('/accounts/test1')
+        expect(axios.get).toHaveBeenCalledWith('/v1/accounts/test1')
       })
     })
 
@@ -171,7 +171,7 @@ describe('store', () => {
         const filter = { approved: true }
 
         const posts = await mockStore.dispatch('getPosts', filter)
-        expect(axios.get).toHaveBeenCalledWith('/posts', { params: filter })
+        expect(axios.get).toHaveBeenCalledWith('/v1/posts', { params: filter })
         expect(posts).toBe(mockPosts)
       })
     })
@@ -188,7 +188,7 @@ describe('store', () => {
 
         const post = await mockStore.dispatch('getPost', 'test')
         expect(post).toBe(mockPost)
-        expect(axios.get).toHaveBeenCalledWith('/posts/test')
+        expect(axios.get).toHaveBeenCalledWith('/v1/posts/test')
       })
     })
   })
