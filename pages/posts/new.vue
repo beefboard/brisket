@@ -1,14 +1,20 @@
 <template>
   <div>
     <form @submit.prevent="post">
-      <input 
-        v-model="title" 
-        type="text" 
+      <input
+        v-model="title"
+        type="text"
         placeholder="Title">
-      <input 
-        v-model="content" 
-        type="text" 
+      <input
+        v-model="content"
+        type="text"
         placeholder="Content">
+      <input
+        type="file"
+        id="files"
+        ref="files"
+        multiple
+        v-on:change="handleFilesUpload()"/>
       <button>Submit</button>
     </form>
   </div>
@@ -20,7 +26,8 @@ export default {
   data() {
     return {
       title: '',
-      content: ''
+      content: '',
+      files: null
     }
   },
   methods: {
@@ -29,14 +36,27 @@ export default {
         return
       }
 
-      const response = await this.$axios.post('/posts', {
-        title: this.title,
-        content: this.content
+      const formData = new FormData()
+      formData.append('title', this.title)
+      formData.append('content', this.content)
+
+      for (const file of this.files) {
+        formData.append('images', file)
+      }
+
+      const response = await this.$axios.post('/v1/posts', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       })
 
       const id = response.data.id
 
       this.$router.push(`/posts/${id}`)
+    },
+
+    handleFilesUpload() {
+      this.files = this.$refs.files.files
     }
   }
 }

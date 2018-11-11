@@ -89,7 +89,7 @@ describe('store', () => {
 
         await mockStore.dispatch('refreshAuth')
 
-        expect(axios.get).toHaveBeenCalledWith('/me', { progress: false })
+        expect(axios.get).toHaveBeenCalledWith('/v1/me', { progress: false })
       })
 
       it('should save auth details in state', async () => {
@@ -107,7 +107,7 @@ describe('store', () => {
         axios.delete.mockResolvedValue({ data: { success: true } })
         await mockStore.dispatch('logout')
 
-        expect(axios.delete).toHaveBeenCalledWith('/me')
+        expect(axios.delete).toHaveBeenCalledWith('/v1/me')
         expect(mockCookiesStore['AUTH_TOKEN']).toBe(null)
         expect(mockStore.state.auth).toBe(null)
         expect(mockStore.state.token).toBe(null)

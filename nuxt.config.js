@@ -43,7 +43,11 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL: process.env.API_URL || 'https://api.beefboard.mooo.com/v1/',
+    baseURL:
+      process.env.API_URL ||
+      (process.env.NODE_ENV == 'development'
+        ? 'http://localhost:2832'
+        : 'https://api.beefboard.mooo.com/'),
     timeout: 1000
   },
 
