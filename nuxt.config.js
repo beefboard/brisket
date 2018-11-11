@@ -47,7 +47,7 @@ module.exports = {
       process.env.API_URL ||
       (process.env.NODE_ENV == 'development'
         ? 'http://localhost:2832'
-        : 'https://api.beefboard.mooo.com/'),
+        : 'https://api.beefboard.mooo.com'),
     timeout: 1000
   },
 
