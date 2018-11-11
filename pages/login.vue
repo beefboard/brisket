@@ -13,8 +13,8 @@
           v-model="password"
           type="password"
           placeholder="Password">
-        <div 
-          v-if="errorMessage" 
+        <div
+          v-if="errorMessage"
           class="error">{{ errorMessage }}</div>
       </div>
       <button
@@ -81,7 +81,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .container {
   width: 100%;
   height: 100%;

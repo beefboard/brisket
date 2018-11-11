@@ -92,5 +92,12 @@ export const actions = {
   async getPost(_, id) {
     const response = await this.$axios.get(`/v1/posts/${id}`)
     return response.data
+  },
+
+  async approvePost(_, id) {
+    const response = await this.$axios.put(`/v1/posts/${id}/approved`, {
+      approved: true
+    })
+    return response.data.success
   }
 }

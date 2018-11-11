@@ -191,5 +191,18 @@ describe('store', () => {
         expect(axios.get).toHaveBeenCalledWith('/v1/posts/test')
       })
     })
+
+    describe('approvePost', () => {
+      it('should set approval to true on the given post id', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        const success = await mockStore.dispatch('approvePost', 'test')
+        expect(axios.put).toHaveBeenCalledWith('/v1/posts/test/approved', {
+          approved: true
+        })
+      })
+    })
   })
 })

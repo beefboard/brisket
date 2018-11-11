@@ -18,6 +18,7 @@ RUN npm install
 
 COPY --from=build /build/.nuxt .nuxt
 COPY --from=build /build/server server
+COPY --from=build /build/static static
 COPY --from=build /build/nuxt.config.js .
 
 ENTRYPOINT [ "node", "/beefboard-web/server" ]

@@ -29,7 +29,7 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['~/plugins/axiosTokenInjector'],
+  plugins: ['~/plugins/axiosTokenInjector', '~/plugins/vue-moment'],
 
   /*
   ** Nuxt.js modules

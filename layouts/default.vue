@@ -5,20 +5,20 @@
         <nuxt-link to="/">Beefboard</nuxt-link>
       </div>
       <div class="links">
-        <nuxt-link 
-          v-if="!auth" 
+        <nuxt-link
+          v-if="!auth"
           to="/login">Login</nuxt-link>
-        <nuxt-link 
-          v-if="!auth" 
+        <nuxt-link
+          v-if="!auth"
           to="/register">Register</nuxt-link>
         <nuxt-link
           v-if="auth"
-          :to="'/profiles/'+auth.username">
+          :to="`/profiles/${auth.username}`">
           {{ auth.username }}
         </nuxt-link>
-        <a 
-          v-if="auth" 
-          class="logout" 
+        <a
+          v-if="auth"
+          class="logout"
           @click="logout">Logout</a>
       </div>
     </div>

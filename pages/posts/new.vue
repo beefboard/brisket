@@ -27,7 +27,7 @@ export default {
     return {
       title: '',
       content: '',
-      files: null
+      files: []
     }
   },
   methods: {
