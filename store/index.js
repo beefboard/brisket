@@ -99,5 +99,13 @@ export const actions = {
       approved: true
     })
     return response.data.success
+  },
+
+  async pinPost(_, { id, pinned }) {
+    const response = await this.$axios.put(`/v1/posts/${id}/pinned`, {
+      pinned: pinned
+    })
+
+    return response.data.success
   }
 }

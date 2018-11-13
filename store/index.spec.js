@@ -203,6 +203,31 @@ describe('store', () => {
           approved: true
         })
       })
+
+      it('should return success value from response', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        const success = await mockStore.dispatch('approvePost', 'test')
+        expect(success).toBe(true)
+      })
+    })
+
+    describe('pinPost', () => {
+      it('should set pinned to the given value for the given post', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        await mockStore.dispatch('pinPost', {
+          id: 'test',
+          pinned: true
+        })
+        expect(axios.put).toHaveBeenCalledWith('/v1/posts/test/pinned', {
+          pinned: true
+        })
+      })
     })
   })
 })

@@ -5,6 +5,7 @@ import flushPromises from 'flush-promises'
 
 VueTestUtils.config.stubs['nuxt-link'] = '<a><slot /></a>'
 VueTestUtils.config.stubs['nuxt'] = '<div><slot /></div>'
+VueTestUtils.config.stubs['fa'] = '<div><slot /></div>'
 
 describe('layout', () => {
   let mockAuth

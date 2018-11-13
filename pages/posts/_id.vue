@@ -1,31 +1,39 @@
 <template>
-  <div class="container">
-    <div class="title">{{ title }}</div>
-    <nuxt-link
-      :to="`/profiles/${author}`"
-      class="author">{{ author }}</nuxt-link>
-    <div class="content">{{ content }}</div>
-    <div>
-      <img
-        class="post-image"
-        v-for="(n,index) in numImages"
-        :key="index" :src="`${api}/v1/posts/${id}/images/${index}`"/>
+  <div class="page-container">
+    <div class="page">
+      <div v-if="admin" class="admin">
+        <button v-if="!post.approved" class="approve-button" @click="approve">Approve</button>
+        <button v-if="post.approved" @click="pin">Pin</button>
+      </div>
+      <nuxt-link class="back" to="/">
+        <fa :icon="faChevronLeft"/>Back to posts
+      </nuxt-link>
+      <post-details
+        :post="post"
+      />
     </div>
-    <button v-if="admin && approved == false" @click="approve">Approve</button>
   </div>
 </template>
 <script>
-import config from '../../nuxt.config'
+import config from '~/nuxt.config'
+import PostDetails from '~/components/PostDetails'
+import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+
 export default {
-  async asyncData({ store, params, error }) {
+  components: {
+    PostDetails
+  },
+  async asyncData({ store, params, error, router }) {
     try {
-      const data = await store.dispatch('getPost', params.id)
+      const post = await store.dispatch('getPost', params.id)
       const admin = store.state.auth && store.state.auth.admin
 
-      return Object.assign(
-        { id: params.id, api: config.axios.baseURL, admin: admin },
-        data
-      )
+      return {
+        id: params.id,
+        api: config.axios.baseURL,
+        admin: admin,
+        post: post
+      }
     } catch (e) {
       console.log(e)
       error({ statusCode: 404, message: 'Post not found' })
@@ -43,21 +51,46 @@ export default {
         await this.$store.dispatch('approvePost', this.id)
         this.approved = true
       } catch (e) {}
+    },
+    async pin() {
+      try {
+        await this.$store.dispatch('pinPost', {
+          id: this.id,
+          pinned: true
+        })
+        this.pinned = true
+      } catch (_) {}
+    },
+    async unpin() {
+      try {
+        await this.$store.dispatch('pinPost', {
+          id: this.id,
+          pinned: false
+        })
+        this.pinned = false
+      } catch (_) {}
+    }
+  },
+  computed: {
+    faChevronLeft() {
+      return faChevronLeft
     }
   }
 }
 </script>
 
 <style scoped>
-.post-image {
-  width: 200px;
-}
-.container {
-  height: 100%;
+.page {
   display: flex;
-  align-content: center;
-  align-items: center;
-  text-align: start;
   flex-direction: column;
+  flex: 1;
+}
+
+a {
+  margin: 1rem;
+  display: flex;
+  align-items: center;
+  color: black;
+  text-decoration: none;
 }
 </style>

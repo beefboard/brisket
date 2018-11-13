@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-container">
     <form @submit.prevent="post">
       <input
         v-model="title"
@@ -62,5 +62,5 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 </style>

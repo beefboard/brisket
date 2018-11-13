@@ -1,47 +1,60 @@
 <template>
-  <section class="container">
+  <div class="page-container">
     <div class="main-posts">
+      <div class="title">Posts</div>
       <div class="posts">
-        <nuxt-link
+        <div
+          class="top-pinned"
+          v-if="pinnedPosts.length > 0">
+          <post
+            :post="post"
+            v-for="(post, index) of pinnedPosts"
+            :key="index"/>
+        </div>
+        <post
+          :post="post"
           v-for="(post, index) of posts"
-          :to="`/posts/${post.id}`"
-          :key="index">
-          <div class="post">
-            <div class="post-img">
-              <img
-                v-if="post.numImages && post.numImages > 0"
-                :src="`${api}/v1/posts/${post.id}/images/0`"/>
-            </div>
-            <div class="details">
-              <div class="title">{{ post.title }}</div>
-              <div class="when">{{ new Date(post.date) | moment("from") }}</div>
-              <div class="content">{{ post.content }}</div>
-              <div class="author">{{ post.author }}</div>
-            </div>
-          </div>
-        </nuxt-link>
+          :key="index"/>
       </div>
     </div>
     <div class="sidebar">
-      <div class="posts">
-        <div class="post">
-          tadsfsdf
-        </div>
+      <div
+        class="posts pinned"
+        v-if="pinnedPosts.length > 0">
+        <post
+          :post="post"
+          v-for="(post, index) of pinnedPosts"
+          :key="index"/>
       </div>
-      <nuxt-link to="/posts/new">New story</nuxt-link>
+      <div
+        class="info-message"
+        v-if="pinnedPosts.length < 1">
+        No pinned posts
+      </div>
       <button
         v-if="admin"
         @click="viewNew">
         Review new stories
       </button>
     </div>
-  </section>
+  </div>
 </template>
 
 <script>
-import config from '../nuxt.config'
-import moment from 'moment'
+import Post from '~/components/Post.vue'
+
 export default {
+  components: {
+    Post
+  },
+  data() {
+    return {
+      posts: [],
+      pinnedPosts: [],
+      unapproved: false,
+      admin: false
+    }
+  },
   async asyncData({ store, error, route }) {
     try {
       const query = {}
@@ -54,11 +67,24 @@ export default {
       posts.sort((p1, p2) => {
         return p2.date.localeCompare(p1.date)
       })
+
+      let pinned =
+        posts.filter(post => {
+          return post.pinned
+        }) || []
+
+      if (pinned.length > 2) {
+        pinned = pinned.slice(0, 2)
+      }
+
+      const unpinned = posts.filter(post => {
+        return !post.pinned
+      })
       return {
-        posts: posts,
+        posts: unpinned,
+        pinnedPosts: pinned,
         unapproved: query.approved === 'false',
-        admin: admin,
-        api: config.axios.baseURL
+        admin: admin
       }
     } catch (e) {
       console.log(e)
@@ -75,94 +101,62 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  height: 100%;
+.main-posts {
+  flex: 1;
   display: flex;
-  overflow: scroll;
+  flex-direction: column;
+  padding-right: 28rem;
+  min-width: 0;
 }
 
-.main-posts {
-  width: 100%;
-  display: flex;
+.title {
   margin-left: 0.5rem;
-  margin-right: 0.5rem;
+  font-size: 5rem;
+  font-weight: bold;
+  color: black;
+  margin-bottom: 1rem;
 }
+
 .posts {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  flex: 1;
+  margin-left: 1rem;
+  margin-right: 1rem;
+  min-width: 0;
 }
 
-@media screen and (max-width: 600px) {
-  .sidebar {
-    display: none !important;
-  }
+.top-pinned {
+  margin-bottom: 1rem;
+  display: none;
 }
 
 .sidebar {
   display: flex;
   flex-direction: column;
-  margin-left: 2rem;
-  margin-right: 0.5rem;
-
-  top: 1rem;
-  position: sticky;
+  position: fixed;
+  top: 9.5rem;
+  right: 1.5rem;
   height: 40rem;
-  width: 40rem;
+  width: 25rem;
 }
 
-.sidebar > .posts {
-  margin-left: 0rem;
+.pinned-title {
+  color: rgb(168, 168, 168);
+  margin-left: 1rem;
 }
 
-.post {
-  margin-top: 0.5rem;
-  margin-bottom: 0.5rem;
-  width: 100%;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
+@media screen and (max-width: 800px) {
+  .sidebar {
+    display: none !important;
+  }
 
-.post:hover {
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
-}
+  .main-posts {
+    padding-right: 0rem;
+  }
 
-.post > .details {
-  padding: 0.5rem;
-}
-
-.post > .details > .title {
-  font-size: 2rem;
-}
-
-.post > .details > .when {
-  font-size: 0.7rem;
-  color: rgb(119, 119, 119);
-  margin-bottom: 0.4rem;
-}
-
-.post > .details > .content {
-  font-size: 0.8rem;
-  color: rgb(109, 109, 109);
-}
-.posts > a {
-  color: black;
-  text-decoration: none;
-}
-
-.post-img {
-  height: 9rem;
-  background-color: rgb(209, 209, 209);
-  position: relative;
-  overflow: hidden;
-}
-
-.post-img > img {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
-  right: -9999px;
-  bottom: -9999px;
-  margin: auto;
+  .top-pinned {
+    display: block;
+  }
 }
 </style>

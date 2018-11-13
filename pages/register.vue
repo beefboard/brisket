@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
     <form @submit.prevent="register">
       <input

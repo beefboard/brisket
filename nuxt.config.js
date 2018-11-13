@@ -24,12 +24,16 @@ module.exports = {
   /*
   ** Global CSS
   */
-  css: ['~/assets/main.css'],
+  css: ['~/assets/main.css', 'swiper/dist/css/swiper.css'],
 
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['~/plugins/axiosTokenInjector', '~/plugins/vue-moment'],
+  plugins: [
+    '~/plugins/axiosTokenInjector',
+    '~/plugins/vue-moment',
+    { src: '~/plugins/gallery.js', ssr: false }
+  ],
 
   /*
   ** Nuxt.js modules
@@ -37,15 +41,26 @@ module.exports = {
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
     '@nuxtjs/axios',
-    'cookie-universal-nuxt'
+    'cookie-universal-nuxt',
+    'nuxt-fontawesome'
   ],
+
+  fontawesome: {
+    imports: [
+      {
+        set: '@fortawesome/free-solid-svg-icons',
+        icons: ['fas']
+      }
+    ],
+    component: 'fa'
+  },
   /*
   ** Axios module configuration
   */
   axios: {
     baseURL:
       process.env.API_URL ||
-      (process.env.NODE_ENV == 'development'
+      (process.env.NODE_ENV == 'development' && false
         ? 'http://localhost:2832'
         : 'https://api.beefboard.mooo.com'),
     timeout: 1000

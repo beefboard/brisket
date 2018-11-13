@@ -1,10 +1,8 @@
 <template>
   <div class="main-container">
-    <div class="top-bar">
-      <div class="logo">
-        <nuxt-link to="/">Beefboard</nuxt-link>
-      </div>
-      <div class="links">
+    <div class="menu-closer" v-if="menuOpen" @click="closeMenu"></div>
+    <div class="menu" v-bind:class="{ 'menu-closed': !menuOpen }">
+      <div class="menu-profile-links">
         <nuxt-link
           v-if="!auth"
           to="/login">Login</nuxt-link>
@@ -21,22 +19,94 @@
           class="logout"
           @click="logout">Logout</a>
       </div>
+      <div class="menu-main-links">
+        <nuxt-link
+          to="/" exact>
+          Home
+        </nuxt-link>
+        <nuxt-link
+          v-if="auth"
+          to="/posts/new">Create
+        </nuxt-link>
+      </div>
     </div>
+    <div class="top-bar">
+      <div class="menu-button" @click="openMenu">
+        <fa :icon="faBars" style="font-size: 2rem;"/>
+      </div>
+      <nuxt-link to="/">
+        <div class="logo">
+          <div class="img-wrapper">
+            <img src="/img/meat.jpg"/>
+          </div>
+          <div class="logo-text">
+            <div>Beefboard</div>
+            <div class="sub-heading">Your local beef</div>
+          </div>
+        </div>
+      </nuxt-link>
+      <div class="links">
+        <div class="main-link">
+          <nuxt-link
+            to="/" exact>
+            Home
+          </nuxt-link>
+          <nuxt-link
+            v-if="auth"
+            to="/posts/new">Create</nuxt-link>
+        </div>
+
+        <div class="profile-links">
+          <nuxt-link
+            v-if="!auth"
+            to="/login">Login</nuxt-link>
+          <nuxt-link
+            v-if="!auth"
+            to="/register">Register</nuxt-link>
+          <nuxt-link
+            v-if="auth"
+            :to="`/profiles/${auth.username}`">
+            {{ auth.username }}
+          </nuxt-link>
+          <a
+            v-if="auth"
+            class="logout"
+            @click="logout">Logout</a>
+        </div>
+      </div>
+    </div>
+    <div class="top-bar-spacer"></div>
     <nuxt/>
   </div>
 </template>
 
 <script>
+import { faBars } from '@fortawesome/free-solid-svg-icons'
+
 export default {
-  computed: {
-    auth() {
-      return this.$store.state.auth
+  data() {
+    return {
+      menuOpen: false
     }
   },
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
       await this.$router.push('/')
+    },
+    openMenu() {
+      this.menuOpen = true
+    },
+    closeMenu() {
+      this.menuOpen = false
+    }
+  },
+  computed: {
+    faBars() {
+      return faBars
+    },
+    auth() {
+      return this.$store.state.auth
     }
   }
 }
@@ -51,17 +121,46 @@ export default {
 
 .top-bar {
   display: flex;
+  position: fixed;
+  z-index: 500;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  background-color: rgb(223, 223, 223);
+  background-color: rgb(255, 255, 255);
   width: 100%;
+  height: 4rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+
+.top-bar-spacer {
   height: 4rem;
 }
 
-.logo > a {
-  padding: 1rem;
+.logo {
+  display: flex;
+  flex-direction: row;
+  padding-left: 1rem;
   font-size: 2rem;
+  user-select: none;
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -o-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.logo-text {
+  margin-left: 0.3rem;
+}
+
+img {
+  margin-top: 0.7rem;
+  width: 3rem;
+}
+
+.sub-heading {
+  font-size: 0.8rem;
+  margin-top: -0.2rem;
+  padding-left: 0.2rem;
 }
 
 .logout {
@@ -69,6 +168,7 @@ export default {
 }
 
 a {
+  padding: 0.1rem;
   margin-right: 20px;
   font-size: 14px;
   color: rgb(61, 61, 61);
@@ -77,14 +177,71 @@ a {
   padding-top: 2px;
   padding-bottom: 2px;
   transition: color 0.25s;
+  transition: font-weight 0.1s ease-in-out;
   font-weight: 400;
   line-height: normal;
 }
 a:hover {
-  color: #333;
+  color: black;
 }
-.links > a.nuxt-link-active {
-  color: rgb(20, 20, 20);
+
+.links a.nuxt-link-active {
+  color: rgb(255, 0, 0);
   font-weight: 600;
+}
+
+.links {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+
+.menu-button {
+  display: none;
+  margin-left: 1rem;
+  cursor: pointer;
+}
+
+.menu {
+  position: absolute;
+  display: none;
+  flex-direction: column;
+  padding: 1rem;
+  height: 100%;
+  left: 0;
+  width: 8rem;
+  background-color: white;
+  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
+  z-index: 99999;
+  transition: left 0.2s ease-in-out;
+}
+
+.menu.menu-closed {
+  left: -10rem;
+}
+
+.menu-closer {
+  position: absolute;
+  left: 7rem;
+  width: 100%;
+  height: 100%;
+}
+
+@media screen and (max-width: 600px) {
+  .menu-button {
+    display: block;
+  }
+
+  .menu {
+    display: flex;
+  }
+
+  .menu-closer {
+    display: block;
+  }
+
+  .links {
+    display: none;
+  }
 }
 </style>

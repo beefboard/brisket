@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <form
       method="post"
       class="login"
@@ -82,7 +82,7 @@ export default {
 </script>
 
 <style scoped>
-.container {
+.page-container {
   width: 100%;
   height: 100%;
   display: flex;

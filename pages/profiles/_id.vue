@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="page-container">
     <div class="profile-container">
       <div class="username">
         {{ username }}
