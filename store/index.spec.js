@@ -229,5 +229,16 @@ describe('store', () => {
         })
       })
     })
+
+    describe('deletePost', () => {
+      it('should delete the given post from the posts api', async () => {
+        axios.delete.mockResolvedValue({
+          data: { success: true }
+        })
+
+        await mockStore.dispatch('deletePost', 'test')
+        expect(axios.delete).toHaveBeenCalledWith('/v1/posts/test')
+      })
+    })
   })
 })

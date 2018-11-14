@@ -6,6 +6,9 @@ exports[`index renders properly 1`] = `
     <div class="title">Posts</div>
     <div class="posts">
       <!---->
+      <div class="no-posts">
+        <div>No new posts</div>
+      </div>
     </div>
   </div>
   <div class="sidebar">
@@ -13,7 +16,9 @@ exports[`index renders properly 1`] = `
     <div class="info-message">
       No pinned posts
     </div>
-    <!---->
+    <div><a to="/posts/?pinned=true">
+        More pinned posts
+      </a></div>
   </div>
 </div>
 `;

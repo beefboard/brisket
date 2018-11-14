@@ -1,28 +1,31 @@
 <template>
   <div class="page-container">
-    <form
-      method="post"
-      class="login"
-      @submit.prevent="login">
-      <div>
-        <input
-          v-model="username"
-          type="text"
-          placeholder="Username">
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password">
-        <div
-          v-if="errorMessage"
-          class="error">{{ errorMessage }}</div>
-      </div>
-      <button
-        :disabled="loginDisabled"
-        type="submit">
-        Login
-      </button>
-    </form>
+    <div class="form-container">
+      <form
+        method="post"
+        class="login"
+        @submit.prevent="login">
+        <div class="inputs">
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Username">
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password">
+          <div
+            v-if="errorMessage"
+            class="error">{{ errorMessage }}</div>
+        </div>
+        <button
+          class="beefbutton"
+          :disabled="loginDisabled"
+          type="submit">
+          Login
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -82,13 +85,28 @@ export default {
 </script>
 
 <style scoped>
-.page-container {
-  width: 100%;
-  height: 100%;
+.form-container {
   display: flex;
-  flex-direction: column;
+  flex: 1;
   justify-content: center;
   align-items: center;
+}
+
+.inputs {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 3rem;
+}
+
+input {
+  width: 20rem;
+  border-style: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+}
+
+input:focus {
+  outline: none;
 }
 
 .login {

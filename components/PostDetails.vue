@@ -75,7 +75,13 @@ export default {
 }
 
 .content {
-  width: 75%;
+  max-width: 70rem;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+}
+
+.content > div {
+  margin: 1rem;
 }
 
 @media screen and (max-width: 600px) {
@@ -104,11 +110,6 @@ export default {
 
 .author {
   text-transform: capitalize;
-}
-
-.content {
-  margin-top: 2rem;
-  font-size: 0.8rem;
 }
 
 .images {

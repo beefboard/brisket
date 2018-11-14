@@ -1,23 +1,28 @@
 <template>
   <div class="page-container">
     <div class="page">
-      <div v-if="admin" class="admin">
-        <button v-if="!post.approved" class="approve-button" @click="approve">Approve</button>
-        <button v-if="post.approved" @click="pin">Pin</button>
+      <div class="top">
+        <nuxt-link class="back" to="/">
+          <fa :icon="faChevronLeft"/>Back to posts
+        </nuxt-link>
+        <div v-if="admin" class="admin">
+          <button class="approve-button beefbutton" v-if="!post.approved" @click="approve">Approve</button>
+          <button class="beefbutton" v-if="post.approved && !post.pinned" @click="pin">Pin</button>
+          <button class="beefbutton" v-if="post.approved && post.pinned" @click="unpin">Unpin</button>
+          <button class="beefbutton" @click="confirmRemove"><fa :icon="faTrashAlt"/></button>
+        </div>
       </div>
-      <nuxt-link class="back" to="/">
-        <fa :icon="faChevronLeft"/>Back to posts
-      </nuxt-link>
       <post-details
         :post="post"
       />
     </div>
+    <v-dialog/>
   </div>
 </template>
 <script>
 import config from '~/nuxt.config'
 import PostDetails from '~/components/PostDetails'
-import { faChevronLeft } from '@fortawesome/free-solid-svg-icons'
+import { faChevronLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
 
 export default {
   components: {
@@ -49,7 +54,7 @@ export default {
     async approve() {
       try {
         await this.$store.dispatch('approvePost', this.id)
-        this.approved = true
+        this.post.approved = true
       } catch (e) {}
     },
     async pin() {
@@ -58,7 +63,7 @@ export default {
           id: this.id,
           pinned: true
         })
-        this.pinned = true
+        this.post.pinned = true
       } catch (_) {}
     },
     async unpin() {
@@ -67,13 +72,37 @@ export default {
           id: this.id,
           pinned: false
         })
-        this.pinned = false
+        this.post.pinned = false
       } catch (_) {}
+    },
+    async remove() {
+      try {
+        await this.$store.dispatch('deletePost', this.id)
+        this.$router.push('/')
+      } catch (_) {}
+    },
+    async confirmRemove() {
+      this.$modal.show('dialog', {
+        title: 'Delete post',
+        text: 'Are you sure you want to delete this post?',
+        buttons: [
+          {
+            title: 'Confirm',
+            handler: this.remove
+          },
+          {
+            title: 'Cancel'
+          }
+        ]
+      })
     }
   },
   computed: {
     faChevronLeft() {
       return faChevronLeft
+    },
+    faTrashAlt() {
+      return faTrashAlt
     }
   }
 }
@@ -86,11 +115,20 @@ export default {
   flex: 1;
 }
 
-a {
+.top {
   margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+a {
   display: flex;
   align-items: center;
   color: black;
   text-decoration: none;
+}
+
+button {
+  font-size: 1rem;
 }
 </style>

@@ -11,6 +11,9 @@
             v-for="(post, index) of pinnedPosts"
             :key="index"/>
         </div>
+        <div class="no-posts" v-if="posts.length < 1">
+          <div>No new posts</div>
+        </div>
         <post
           :post="post"
           v-for="(post, index) of posts"
@@ -25,17 +28,16 @@
           :post="post"
           v-for="(post, index) of pinnedPosts"
           :key="index"/>
+        <nuxt-link
+          to="/posts/?pinned=true">
+          More...
+        </nuxt-link>
       </div>
       <div
         class="info-message"
         v-if="pinnedPosts.length < 1">
         No pinned posts
       </div>
-      <button
-        v-if="admin"
-        @click="viewNew">
-        Review new stories
-      </button>
     </div>
   </div>
 </template>
@@ -51,19 +53,12 @@ export default {
     return {
       posts: [],
       pinnedPosts: [],
-      unapproved: false,
-      admin: false
+      pinnedTruncated: false
     }
   },
   async asyncData({ store, error, route }) {
     try {
-      const query = {}
-      const admin = store.state.auth && store.state.auth.admin
-
-      if (route.query.approved !== undefined && admin) {
-        query.approved = route.query.approved
-      }
-      const posts = await store.dispatch('getPosts', query)
+      const posts = await store.dispatch('getPosts')
       posts.sort((p1, p2) => {
         return p2.date.localeCompare(p1.date)
       })
@@ -73,18 +68,20 @@ export default {
           return post.pinned
         }) || []
 
+      let pinnedTruncated = false
       if (pinned.length > 2) {
         pinned = pinned.slice(0, 2)
+        pinnedTruncated = true
       }
 
       const unpinned = posts.filter(post => {
         return !post.pinned
       })
+
       return {
         posts: unpinned,
         pinnedPosts: pinned,
-        unapproved: query.approved === 'false',
-        admin: admin
+        pinnedTruncated: pinnedTruncated
       }
     } catch (e) {
       console.log(e)
@@ -126,6 +123,16 @@ export default {
   min-width: 0;
 }
 
+.no-posts {
+  flex: 1;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: grey;
+}
+
 .top-pinned {
   margin-bottom: 1rem;
   display: none;
@@ -144,6 +151,11 @@ export default {
 .pinned-title {
   color: rgb(168, 168, 168);
   margin-left: 1rem;
+}
+
+a {
+  color: black;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 800px) {

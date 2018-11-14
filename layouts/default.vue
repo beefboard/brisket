@@ -2,6 +2,20 @@
   <div class="main-container">
     <div class="menu-closer" v-if="menuOpen" @click="closeMenu"></div>
     <div class="menu" v-bind:class="{ 'menu-closed': !menuOpen }">
+      <div class="menu-main-links">
+        <nuxt-link
+          to="/" exact>
+          Home
+        </nuxt-link>
+        <nuxt-link
+          to="/posts/" exact>
+          Browse
+        </nuxt-link>
+        <nuxt-link
+          v-if="auth"
+          to="/posts/new">Create
+        </nuxt-link>
+      </div>
       <div class="menu-profile-links">
         <nuxt-link
           v-if="!auth"
@@ -18,16 +32,6 @@
           v-if="auth"
           class="logout"
           @click="logout">Logout</a>
-      </div>
-      <div class="menu-main-links">
-        <nuxt-link
-          to="/" exact>
-          Home
-        </nuxt-link>
-        <nuxt-link
-          v-if="auth"
-          to="/posts/new">Create
-        </nuxt-link>
       </div>
     </div>
     <div class="top-bar">
@@ -52,8 +56,14 @@
             Home
           </nuxt-link>
           <nuxt-link
+            to="/posts/" exact>
+            Browse
+          </nuxt-link>
+          <nuxt-link
             v-if="auth"
-            to="/posts/new">Create</nuxt-link>
+            to="/posts/new">
+            Create
+          </nuxt-link>
         </div>
 
         <div class="profile-links">
@@ -84,7 +94,11 @@
 import { faBars } from '@fortawesome/free-solid-svg-icons'
 
 export default {
-  data() {
+  data({ $router }) {
+    $router.beforeEach((to, from, next) => {
+      this.menuOpen = false
+      next()
+    })
     return {
       menuOpen: false
     }
@@ -92,6 +106,7 @@ export default {
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
+      this.menuOpen = false
       await this.$router.push('/')
     },
     openMenu() {
@@ -190,6 +205,11 @@ a:hover {
   font-weight: 600;
 }
 
+.menu a.nuxt-link-active {
+  color: rgb(255, 0, 0);
+  font-weight: 600;
+}
+
 .links {
   width: 100%;
   display: flex;
@@ -198,18 +218,18 @@ a:hover {
 
 .menu-button {
   display: none;
-  margin-left: 1rem;
+  margin: 1rem;
   cursor: pointer;
 }
 
 .menu {
-  position: absolute;
+  position: fixed;
   display: none;
   flex-direction: column;
   padding: 1rem;
-  height: 100%;
+  height: 100vh;
   left: 0;
-  width: 8rem;
+  width: 10rem;
   background-color: white;
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
   z-index: 99999;
@@ -217,17 +237,33 @@ a:hover {
 }
 
 .menu.menu-closed {
-  left: -10rem;
+  left: -13rem;
 }
 
 .menu-closer {
-  position: absolute;
+  position: fixed;
   left: 7rem;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
 }
 
-@media screen and (max-width: 600px) {
+.menu-main-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+.menu-profile-links {
+  display: flex;
+  flex-direction: column;
+  margin-top: 2rem;
+}
+
+.menu a {
+  margin: 1rem;
+}
+
+@media screen and (max-width: 700px) {
   .menu-button {
     display: block;
   }

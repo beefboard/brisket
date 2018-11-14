@@ -63,7 +63,7 @@ export default {
 }
 
 .pinned {
-  background-color: rgb(254, 255, 179);
+  box-shadow: 0 4px 9px rgba(255, 0, 0, 0.12), 0 4px 9px rgba(255, 0, 0, 0.24);
 }
 
 .pin-container {
@@ -84,7 +84,7 @@ export default {
 
 .sub-details {
   display: flex;
-  width: 100%;
+  flex: 1;
   justify-content: space-between;
   align-items: flex-start;
 }

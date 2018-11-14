@@ -32,6 +32,8 @@ module.exports = {
   plugins: [
     '~/plugins/axiosTokenInjector',
     '~/plugins/vue-moment',
+    '~/plugins/textarea',
+    '~plugins/modal',
     { src: '~/plugins/gallery.js', ssr: false }
   ],
 

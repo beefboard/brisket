@@ -31,7 +31,7 @@
         v-model="lastName"
         type="text"
         placeholder="Last name">
-      <button :disabled="!validForm || loading">Register</button>
+      <button class="beefbutton" :disabled="!validForm || loading">Register</button>
     </form>
   </div>
 </template>

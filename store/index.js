@@ -107,5 +107,10 @@ export const actions = {
     })
 
     return response.data.success
+  },
+
+  async deletePost(_, id) {
+    const response = await this.$axios.delete(`/v1/posts/${id}`)
+    return response.data.success
   }
 }
