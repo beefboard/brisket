@@ -4,13 +4,15 @@ exports[`layout renders properly 1`] = `
 <div class="main-container">
   <!---->
   <div class="menu menu-closed">
-    <div class="menu-profile-links"><a to="/login">Login</a> <a to="/register">Register</a>
-      <!---->
-      <!---->
-    </div>
     <div class="menu-main-links"><a to="/" exact="">
         Home
+      </a> <a to="/posts/" exact="">
+        Browse
       </a>
+      <!---->
+    </div>
+    <div class="menu-profile-links"><a to="/login">Login</a> <a to="/register">Register</a>
+      <!---->
       <!---->
     </div>
   </div>
@@ -29,6 +31,8 @@ exports[`layout renders properly 1`] = `
     <div class="links">
       <div class="main-link"><a to="/" exact="">
           Home
+        </a> <a to="/posts/" exact="">
+          Browse
         </a>
         <!---->
       </div>

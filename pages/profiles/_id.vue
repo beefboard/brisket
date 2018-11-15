@@ -1,22 +1,24 @@
 <template>
   <div class="page-container">
     <div class="profile-container">
-      <div class="username">
-        {{ username }}
+      <div>
+        <div class="username">
+          {{ username }}
+        </div>
+        <div class="name">{{ firstName }} {{ lastName }}</div>
       </div>
-      <div class="name">{{ firstName }} {{ lastName }}</div>
     </div>
   </div>
 </template>
 <script>
 export default {
   async asyncData({ params, $axios, store, error }) {
-    if (params.id == store.state.auth.username) {
+    if (store.state.auth && params.id.toLowerCase() == store.state.auth) {
       return store.state.auth
     }
 
     try {
-      return (await $axios.get(`/accounts/${params.id}`)).data
+      return await store.dispatch('getUser', params.id)
     } catch (e) {
       error({ statusCode: 404, message: 'User not found' })
     }
@@ -32,13 +34,11 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  height: 100%;
+.profile-container {
   display: flex;
   align-content: center;
-  align-items: center;
-  text-align: start;
-  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 }
 
 .username {

@@ -242,8 +242,8 @@ a:hover {
 
 .menu-closer {
   position: fixed;
-  left: 7rem;
-  width: 100vw;
+  left: 11.5rem;
+  width: calc(100vw - 11.5rem);
   height: 100vh;
 }
 

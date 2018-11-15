@@ -104,7 +104,6 @@ export default {
 .details {
   display: flex;
   flex-direction: column;
-  flex: 1;
   font-size: 0.8rem;
 }
 

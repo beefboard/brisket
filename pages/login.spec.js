@@ -27,7 +27,7 @@ describe('login', () => {
 
   test('error message should not be visible on load', () => {
     const wrapper = shallowMount(login)
-    expect(wrapper.find('.error').exists()).toBe(false)
+    expect(wrapper.find('.error').text()).toBe('')
   })
 
   test('entering username and password enables login button', () => {

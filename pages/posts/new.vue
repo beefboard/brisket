@@ -125,6 +125,15 @@ export default {
   display: none;
 }
 
+.upload-button {
+  width: 8rem;
+}
+
+textarea {
+  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
 .images {
   display: flex;
   justify-content: flex-end;

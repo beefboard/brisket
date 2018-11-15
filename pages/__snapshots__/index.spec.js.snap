@@ -16,9 +16,6 @@ exports[`index renders properly 1`] = `
     <div class="info-message">
       No pinned posts
     </div>
-    <div><a to="/posts/?pinned=true">
-        More pinned posts
-      </a></div>
   </div>
 </div>
 `;

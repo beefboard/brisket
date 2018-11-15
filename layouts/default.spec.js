@@ -20,7 +20,8 @@ describe('layout', () => {
           }
         },
         $router: {
-          push: jest.fn()
+          push: jest.fn(),
+          beforeEach: jest.fn()
         }
       }
     })

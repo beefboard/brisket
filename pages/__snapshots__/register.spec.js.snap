@@ -2,7 +2,14 @@
 
 exports[`login renders properly 1`] = `
 <div class="page-container">
-  <!---->
-  <form><input type="text" placeholder="Username" class=""> <input type="password" placeholder="Password" class=""> <input type="password" placeholder="Retype password" class=""> <input type="text" placeholder="Email" class=""> <input type="text" placeholder="First name"> <input type="text" placeholder="Last name"> <button disabled="disabled">Register</button></form>
+  <div class="form-container">
+    <form><input type="text" placeholder="Username" class="">
+      <div class="password-input"><input type="password" placeholder="Password" class=""> <input type="password" placeholder="Retype password" class=""></div> <input type="text" placeholder="Email" class="">
+      <div class="name-input"><input type="text" placeholder="First name"> <input type="text" placeholder="Last name"></div>
+      <div class="error-message">
+
+      </div> <button disabled="disabled" class="beefbutton register-button">Register</button>
+    </form>
+  </div>
 </div>
 `;

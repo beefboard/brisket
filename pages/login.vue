@@ -5,6 +5,7 @@
         method="post"
         class="login"
         @submit.prevent="login">
+        <div class="title">Beefboard</div>
         <div class="inputs">
           <input
             v-model="username"
@@ -14,12 +15,10 @@
             v-model="password"
             type="password"
             placeholder="Password">
-          <div
-            v-if="errorMessage"
-            class="error">{{ errorMessage }}</div>
+          <div class="error">{{ errorMessage }}</div>
         </div>
         <button
-          class="beefbutton"
+          class="beefbutton login-button"
           :disabled="loginDisabled"
           type="submit">
           Login
@@ -72,6 +71,7 @@ export default {
         if (e.response) {
           if (e.response.status == 401) {
             this.errorMessage = 'Invalid username or password'
+            this.password = ''
           } else if (e.response.status == 500) {
             this.errorMessage = 'Server error'
           }
@@ -89,13 +89,32 @@ export default {
   display: flex;
   flex: 1;
   justify-content: center;
+}
+
+form {
+  display: flex;
   align-items: center;
+}
+
+.title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 3rem;
+  margin: 3rem;
+  margin-bottom: 5rem;
 }
 
 .inputs {
   display: flex;
   flex-direction: column;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
+}
+
+.error {
+  height: 1rem;
+  font-size: 1rem;
+  color: red;
+  text-align: center;
 }
 
 input {
@@ -103,6 +122,9 @@ input {
   border-style: none;
   font-size: 1rem;
   margin-bottom: 1rem;
+  padding: 0.6rem;
+  background-color: #f1f1f1;
+  border-radius: 0.5rem;
 }
 
 input:focus {
@@ -112,5 +134,9 @@ input:focus {
 .login {
   display: flex;
   flex-direction: column;
+}
+
+.login-button {
+  width: 100%;
 }
 </style>
