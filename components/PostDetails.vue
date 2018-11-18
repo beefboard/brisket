@@ -4,6 +4,7 @@
       <div class="details">
         <nuxt-link :to="`/profiles/${post.author}`" class="author">{{ post.author }}</nuxt-link>
         <div class="date">{{ new Date(post.date) | moment("dddd, MMMM Do YYYY") }}</div>
+        <div class="info" v-if="!post.approved">Awaiting approval</div>
       </div>
       <div class="images" v-if="images.length > 0">
         <gallery :images="images" :index="index" @close="index = null"></gallery>
@@ -74,6 +75,15 @@ export default {
   justify-content: center;
 }
 
+.info {
+  background-color: red;
+  color: white;
+  padding: 0.2rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
+}
+
 .content {
   max-width: 70rem;
   margin-top: 2rem;
@@ -103,6 +113,7 @@ export default {
 
 .details {
   display: flex;
+  align-items: flex-start;
   flex-direction: column;
   font-size: 0.8rem;
 }

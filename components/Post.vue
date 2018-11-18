@@ -8,8 +8,9 @@
       <div class="details">
         <div class="top">
           <div class="title">{{ post.title }}</div>
-          <div v-if="post.pinned" class="pin-container">
-            <fa :icon="faMapPin" style="font-size: 20px; transform: rotate(20deg)"/>
+          <div class="top-right">
+            <div v-if="!post.approved" class="info">Awaiting approval</div>
+            <fa v-if="post.pinned" :icon="faMapPin" style="font-size: 20px; transform: rotate(20deg)"/>
           </div>
         </div>
         <div class="content">{{ post.content }}</div>
@@ -66,12 +67,23 @@ export default {
   box-shadow: 0 4px 9px rgba(255, 0, 0, 0.12), 0 4px 9px rgba(255, 0, 0, 0.24);
 }
 
-.pin-container {
+.top-right {
+  display: flex;
+  align-items: flex-start;
   right: 1rem;
 }
 
 .post:hover {
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
+}
+
+.info {
+  background-color: red;
+  color: white;
+  padding: 0.2rem;
+  text-align: center;
+  border-radius: 0.5rem;
+  font-size: 0.7rem;
 }
 
 .details {
