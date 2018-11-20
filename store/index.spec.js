@@ -254,7 +254,7 @@ describe('store', () => {
           vote: -1
         })
 
-        expect(axios.post).toHaveBeenCalledWith('/v1/posts/params/votes', {
+        expect(axios.post).toHaveBeenCalledWith('/v1/posts/asdfdf/votes', {
           grade: -1
         })
       })
