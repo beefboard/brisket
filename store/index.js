@@ -112,5 +112,13 @@ export const actions = {
   async deletePost(_, id) {
     const response = await this.$axios.delete(`/v1/posts/${id}`)
     return response.data.success
+  },
+
+  async votePost(_, params) {
+    const response = await this.$axios.post(`/v1/posts/${params.post}/votes`, {
+      grade: params.vote
+    })
+
+    return response.data.success
   }
 }

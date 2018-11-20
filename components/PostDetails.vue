@@ -32,6 +32,7 @@
 
 <script>
 import config from '~/nuxt.config'
+import { faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
 
 export default {
   name: 'post-details',
@@ -53,6 +54,14 @@ export default {
     return {
       images: images,
       index: null
+    }
+  },
+  computed: {
+    faChevronUp() {
+      return faChevronUp
+    },
+    faChevronDown() {
+      return faChevronDown
     }
   }
 }

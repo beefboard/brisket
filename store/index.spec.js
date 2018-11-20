@@ -240,5 +240,24 @@ describe('store', () => {
         expect(axios.delete).toHaveBeenCalledWith('/v1/posts/test')
       })
     })
+
+    describe('votePost', () => {
+      it('should send vote with our current user', async () => {
+        axios.post.mockResolvedValue({
+          data: {
+            success: true
+          }
+        })
+
+        await mockStore.dispatch('votePost', {
+          post: 'asdfdf',
+          vote: -1
+        })
+
+        expect(axios.post).toHaveBeenCalledWith('/v1/posts/params/votes', {
+          grade: -1
+        })
+      })
+    })
   })
 })
