@@ -6,17 +6,31 @@
         <img :src="`${api}/v1/posts/${post.id}/images/0`"/>
       </div>
       <div class="details">
-        <div class="top">
-          <div class="title">{{ post.title }}</div>
-          <div class="top-right">
-            <div v-if="!post.approved" class="info">Awaiting approval</div>
-            <fa v-if="post.pinned" :icon="faMapPin" style="font-size: 20px; transform: rotate(20deg)"/>
+        <div class="details-left">
+          <div class="top">
+            <div class="title">{{ post.title }}</div>
+            <div class="top-right">
+              <div v-if="!post.approved" class="info">Awaiting approval</div>
+              <fa v-if="post.pinned" :icon="faMapPin" style="font-size: 20px; transform: rotate(20deg)"/>
+            </div>
+          </div>
+          <div class="content">{{ post.content }}</div>
+          <div class="sub-details">
+            <div class="author">{{ post.author }}</div>
+            <div class="when">{{ new Date(post.date) | moment("from") }}</div>
           </div>
         </div>
-        <div class="content">{{ post.content }}</div>
-        <div class="sub-details">
-          <div class="author">{{ post.author }}</div>
-          <div class="when">{{ new Date(post.date) | moment("from") }}</div>
+        <div class="details-right">
+          <fa
+            :icon="faChevronUp"
+            @click="vote($event, 1)"
+            class="vote-button"
+            v-bind:class="{ 'vote-button-active': voteDirection > 0 }"/>
+          <div>{{ post.votes.grade }}</div>
+          <fa :icon="faChevronDown"
+            @click="vote($event, -1)"
+            class="vote-button"
+            v-bind:class="{ 'vote-button-active': voteDirection < 0 }"/>
         </div>
       </div>
     </div>
@@ -25,7 +39,12 @@
 
 <script>
 import config from '~/nuxt.config'
-import { faMapPin } from '@fortawesome/free-solid-svg-icons'
+import {
+  faMapPin,
+  faChevronDown,
+  faChevronUp
+} from '@fortawesome/free-solid-svg-icons'
+
 export default {
   name: 'recursive-list',
   props: {
@@ -41,12 +60,67 @@ export default {
   },
   data() {
     return {
-      api: config.axios.baseURL
+      api: config.axios.baseURL,
+      voting: false
+    }
+  },
+  methods: {
+    vote(event, value) {
+      event.preventDefault()
+      if (this.voting) {
+        return
+      }
+
+      if (this.post.votes[this.username] == value) {
+        value = 0
+      }
+
+      if (this.username) {
+        this.voting = true
+        this.doVote(value)
+      }
+    },
+    async doVote(value) {
+      try {
+        await this.$store.dispatch('votePost', {
+          post: this.post.id,
+          vote: value
+        })
+        if (this.username) {
+          const currentGrading = this.post.votes[this.username]
+          this.post.votes.grade =
+            parseInt(this.post.votes.grade) - currentGrading
+        }
+        this.post.votes.grade = parseInt(this.post.votes.grade) + value
+        this.post.votes[this.username] = value
+      } catch (e) {
+        console.log(e)
+      }
+
+      this.voting = false
     }
   },
   computed: {
+    username() {
+      if (this.$store.state.auth) {
+        return this.$store.state.auth.username
+      }
+    },
+    voteDirection() {
+      if (this.username) {
+        return this.post.votes[this.username]
+      }
+
+      return 0
+    },
     faMapPin() {
       return faMapPin
+    },
+    faChevronUp() {
+      return faChevronUp
+    },
+    faChevronDown() {
+      return faChevronDown
     }
   }
 }
@@ -77,6 +151,20 @@ export default {
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 
+.vote-button-active {
+  color: red !important;
+}
+
+.vote-button {
+  color: grey;
+  transition: color 0.2s ease-in-out;
+  font-size: 1.3rem;
+}
+
+.vote-button:hover {
+  color: red;
+}
+
 .info {
   background-color: red;
   color: white;
@@ -88,10 +176,9 @@ export default {
 
 .details {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: flex-start;
   flex: 1;
-  margin: 0.5rem;
-  margin-top: 0.2rem;
 }
 
 .sub-details {
@@ -101,14 +188,31 @@ export default {
   align-items: flex-start;
 }
 
-.details > .top {
+.details-left {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin: 0.5rem;
+  margin-top: 0.2rem;
+  min-width: 0;
+}
+
+.details-left > .top {
   display: flex;
   justify-content: space-between;
 }
 
-.details > .top > .title {
+.details-left > .top > .title {
   font-size: 1.9rem;
   margin-bottom: -0.1rem;
+}
+
+.details-right {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 2rem;
 }
 
 .sub-details > .when {
@@ -126,7 +230,7 @@ export default {
   margin-left: 0.2rem;
 }
 
-.details > .content {
+.details-left > .content {
   height: 1rem;
   flex: 1;
   min-width: 0;
