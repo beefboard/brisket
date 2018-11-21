@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Post renders properly 1`] = `
+<a to="/posts/asdfasdf">
+  <div class="post">
+    <!---->
+    <div class="details">
+      <div class="details-left">
+        <div class="top">
+          <div class="title">test</div>
+          <div class="top-right">
+            <div class="info">Awaiting approval</div>
+            <!---->
+          </div>
+        </div>
+        <div class="content">sadfasdfsadf sdsdsdg</div>
+        <div class="sub-details">
+          <div class="author">test</div>
+          <div class="when">"2017-12-28T00:00:00.000Z"</div>
+        </div>
+      </div>
+      <div class="details-right">
+        <div icon="[object Object]" class="vote-button"></div>
+        <div>1</div>
+        <div icon="[object Object]" class="vote-button"></div>
+      </div>
+    </div>
+  </div>
+</a>
+`;

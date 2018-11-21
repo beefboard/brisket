@@ -71,11 +71,12 @@ export default {
         return
       }
 
-      if (this.post.votes[this.username] == value) {
+      // Toggles the current vote they have made
+      if (this.post.votes.user == value) {
         value = 0
       }
 
-      if (this.username) {
+      if (this.auth) {
         this.voting = true
         this.doVote(value)
       }
@@ -86,13 +87,14 @@ export default {
           post: this.post.id,
           vote: value
         })
-        if (this.username) {
-          const currentGrading = this.post.votes[this.username]
+
+        if (this.auth) {
+          const currentGrading = this.post.votes.user
           this.post.votes.grade =
             parseInt(this.post.votes.grade) - currentGrading
         }
         this.post.votes.grade = parseInt(this.post.votes.grade) + value
-        this.post.votes[this.username] = value
+        this.post.votes.user = value
       } catch (e) {
         console.log(e)
       }
@@ -101,14 +103,12 @@ export default {
     }
   },
   computed: {
-    username() {
-      if (this.$store.state.auth) {
-        return this.$store.state.auth.username
-      }
+    auth() {
+      return this.$store.state.auth
     },
     voteDirection() {
-      if (this.username) {
-        return this.post.votes[this.username]
+      if (this.auth) {
+        return this.post.votes.user
       }
 
       return 0
