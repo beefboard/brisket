@@ -1,17 +1,26 @@
 <template>
   <nuxt-link
     :to="`/posts/${post.id}`">
-    <div class="post" v-bind:class="{ pinned: post.pinned }">
-      <div class="post-img" v-if="post.numImages > 0">
-        <img :src="`${api}/v1/posts/${post.id}/images/0`"/>
+    <div 
+      :class="{ pinned: post.pinned }" 
+      class="post">
+      <div 
+        v-if="post.numImages > 0" 
+        class="post-img">
+        <img :src="`${api}/v1/posts/${post.id}/images/0`">
       </div>
       <div class="details">
         <div class="details-left">
           <div class="top">
             <div class="title">{{ post.title }}</div>
             <div class="top-right">
-              <div v-if="!post.approved" class="info">Awaiting approval</div>
-              <fa class="pin" v-if="post.pinned" :icon="faMapPin"/>
+              <div 
+                v-if="!post.approved" 
+                class="info">Awaiting approval</div>
+              <fa 
+                v-if="post.pinned" 
+                :icon="faMapPin" 
+                class="pin"/>
             </div>
           </div>
           <div class="content">{{ post.content }}</div>
@@ -22,20 +31,21 @@
         </div>
         <div class="details-right">
           <div
-            @click="vote($event, 1)"
-            id="vote-button-up">
+            id="vote-button-up"
+            @click="vote($event, 1)">
             <fa
               :icon="faChevronUp"
-              class="vote-button"
-              v-bind:class="{ 'vote-button-active': voteDirection > 0 }"/>
+              :class="{ 'vote-button-active': voteDirection > 0 }"
+              class="vote-button"/>
           </div>
           <div>{{ post.votes.grade }}</div>
           <div
             id="vote-button-down"
             @click="vote($event, -1)">
-            <fa :icon="faChevronDown"
-              class="vote-button"
-              v-bind:class="{ 'vote-button-active': voteDirection < 0 }"/>
+            <fa 
+              :icon="faChevronDown"
+              :class="{ 'vote-button-active': voteDirection < 0 }"
+              class="vote-button"/>
           </div>
         </div>
       </div>
@@ -52,7 +62,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 export default {
-  name: 'recursive-list',
+  name: 'RecursiveList',
   props: {
     post: {
       type: Object,
@@ -63,6 +73,27 @@ export default {
     return {
       api: config.axios.baseURL,
       voting: false
+    }
+  },
+  computed: {
+    auth() {
+      return this.$store.state.auth
+    },
+    voteDirection() {
+      if (this.auth) {
+        return this.post.votes.user
+      }
+
+      return 0
+    },
+    faMapPin() {
+      return faMapPin
+    },
+    faChevronUp() {
+      return faChevronUp
+    },
+    faChevronDown() {
+      return faChevronDown
     }
   },
   methods: {
@@ -100,27 +131,6 @@ export default {
       }
 
       this.voting = false
-    }
-  },
-  computed: {
-    auth() {
-      return this.$store.state.auth
-    },
-    voteDirection() {
-      if (this.auth) {
-        return this.post.votes.user
-      }
-
-      return 0
-    },
-    faMapPin() {
-      return faMapPin
-    },
-    faChevronUp() {
-      return faChevronUp
-    },
-    faChevronDown() {
-      return faChevronDown
     }
   }
 }

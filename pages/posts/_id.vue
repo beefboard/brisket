@@ -2,14 +2,29 @@
   <div class="page-container">
     <div class="page">
       <div class="top">
-        <nuxt-link class="back" to="/">
+        <nuxt-link 
+          class="back" 
+          to="/">
           <fa :icon="faChevronLeft"/>Back to posts
         </nuxt-link>
-        <div v-if="admin" class="admin">
-          <button class="approve-button beefbutton" v-if="!post.approved" @click="approve">Approve</button>
-          <button class="beefbutton" v-if="post.approved && !post.pinned" @click="pin">Pin</button>
-          <button class="beefbutton" v-if="post.approved && post.pinned" @click="unpin">Unpin</button>
-          <button class="beefbutton" @click="confirmRemove"><fa :icon="faTrashAlt"/></button>
+        <div 
+          v-if="admin" 
+          class="admin">
+          <button 
+            v-if="!post.approved" 
+            class="approve-button beefbutton" 
+            @click="approve">Approve</button>
+          <button 
+            v-if="post.approved && !post.pinned" 
+            class="beefbutton" 
+            @click="pin">Pin</button>
+          <button 
+            v-if="post.approved && post.pinned" 
+            class="beefbutton" 
+            @click="unpin">Unpin</button>
+          <button 
+            class="beefbutton" 
+            @click="confirmRemove"><fa :icon="faTrashAlt"/></button>
         </div>
       </div>
       <post-details
@@ -49,6 +64,14 @@ export default {
       return redirect('/')
     }
     return true
+  },
+  computed: {
+    faChevronLeft() {
+      return faChevronLeft
+    },
+    faTrashAlt() {
+      return faTrashAlt
+    }
   },
   methods: {
     async approve() {
@@ -95,14 +118,6 @@ export default {
           }
         ]
       })
-    }
-  },
-  computed: {
-    faChevronLeft() {
-      return faChevronLeft
-    },
-    faTrashAlt() {
-      return faTrashAlt
     }
   }
 }

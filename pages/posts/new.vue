@@ -2,39 +2,48 @@
   <div class="page-container">
     <div class="form">
       <div>
-        <div class="images" v-if="images.length > 0">
-          <gallery :images="images" :index="index" @close="index = null"></gallery>
+        <div 
+          v-if="images.length > 0" 
+          class="images">
+          <gallery 
+            :images="images" 
+            :index="index" 
+            @close="index = null"/>
           <div
-            class="image"
             v-for="(image, imageIndex) in images"
             :key="imageIndex"
-            @click="index = imageIndex"
             :style="{ backgroundImage: 'url(' + image + ')', width: '300px', height: '200px' }"
-          ></div>
+            class="image"
+            @click="index = imageIndex"
+          />
         </div>
         <div class="top">
           <input
-            class="title"
             v-model="title"
+            class="title"
             type="text"
-            placeholder="Title"/>
+            placeholder="Title">
           <input
-            type="file"
             id="files"
-            class="files"
             ref="files"
+            type="file"
+            class="files"
             multiple
-            v-on:change="handleFilesUpload()"/>
-          <button class="beefbutton upload-button" @click="uploadFile">Attach photo(s)</button>
+            @change="handleFilesUpload()">
+          <button 
+            class="beefbutton upload-button" 
+            @click="uploadFile">Attach photo(s)</button>
         </div>
         <textarea-autosize
-          placeholder="Type something here..."
           v-model="content"
           :min-height="300"
-          @blur.native="onBlurTextarea"
+          placeholder="Type something here..."
           style="border: none; outline: none; font-size: 1rem;"
-        ></textarea-autosize>
-        <button @click="post" class="beefbutton submit-button">Submit</button>
+          @blur.native="onBlurTextarea"
+        />
+        <button 
+          class="beefbutton submit-button" 
+          @click="post">Submit</button>
       </div>
     </div>
   </div>

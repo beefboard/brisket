@@ -1,14 +1,21 @@
 <template>
   <div class="main-container">
-    <div class="menu-closer" v-if="menuOpen" @click="closeMenu"></div>
-    <div class="menu" v-bind:class="{ 'menu-closed': !menuOpen }">
+    <div 
+      v-if="menuOpen" 
+      class="menu-closer" 
+      @click="closeMenu"/>
+    <div 
+      :class="{ 'menu-closed': !menuOpen }" 
+      class="menu">
       <div class="menu-main-links">
         <nuxt-link
-          to="/" exact>
+          to="/" 
+          exact>
           Home
         </nuxt-link>
         <nuxt-link
-          to="/posts/" exact>
+          to="/posts/" 
+          exact>
           Browse
         </nuxt-link>
         <nuxt-link
@@ -35,13 +42,17 @@
       </div>
     </div>
     <div class="top-bar">
-      <div class="menu-button" @click="openMenu">
-        <fa :icon="faBars" style="font-size: 2rem;"/>
+      <div 
+        class="menu-button" 
+        @click="openMenu">
+        <fa 
+          :icon="faBars" 
+          style="font-size: 2rem;"/>
       </div>
       <nuxt-link to="/">
         <div class="logo">
           <div class="img-wrapper">
-            <img src="/img/meat.jpg"/>
+            <img src="/img/meat.jpg">
           </div>
           <div class="logo-text">
             <div>Beefboard</div>
@@ -52,11 +63,13 @@
       <div class="links">
         <div class="main-link">
           <nuxt-link
-            to="/" exact>
+            to="/" 
+            exact>
             Home
           </nuxt-link>
           <nuxt-link
-            to="/posts/" exact>
+            to="/posts/" 
+            exact>
             Browse
           </nuxt-link>
           <nuxt-link
@@ -85,7 +98,7 @@
         </div>
       </div>
     </div>
-    <div class="top-bar-spacer"></div>
+    <div class="top-bar-spacer"/>
     <nuxt/>
   </div>
 </template>
@@ -103,6 +116,14 @@ export default {
       menuOpen: false
     }
   },
+  computed: {
+    faBars() {
+      return faBars
+    },
+    auth() {
+      return this.$store.state.auth
+    }
+  },
   methods: {
     async logout() {
       await this.$store.dispatch('logout')
@@ -114,14 +135,6 @@ export default {
     },
     closeMenu() {
       this.menuOpen = false
-    }
-  },
-  computed: {
-    faBars() {
-      return faBars
-    },
-    auth() {
-      return this.$store.state.auth
     }
   }
 }

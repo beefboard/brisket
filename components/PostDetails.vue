@@ -2,19 +2,28 @@
   <div class="container">
     <div class="top">
       <div class="details">
-        <nuxt-link :to="`/profiles/${post.author}`" class="author">{{ post.author }}</nuxt-link>
+        <nuxt-link 
+          :to="`/profiles/${post.author}`" 
+          class="author">{{ post.author }}</nuxt-link>
         <div class="date">{{ new Date(post.date) | moment("dddd, MMMM Do YYYY") }}</div>
-        <div class="info" v-if="!post.approved">Awaiting approval</div>
+        <div 
+          v-if="!post.approved" 
+          class="info">Awaiting approval</div>
       </div>
-      <div class="images" v-if="images.length > 0">
-        <gallery :images="images" :index="index" @close="index = null"></gallery>
+      <div 
+        v-if="images.length > 0" 
+        class="images">
+        <gallery 
+          :images="images" 
+          :index="index" 
+          @close="index = null"/>
         <div
-          class="image"
           v-for="(image, imageIndex) in images"
           :key="imageIndex"
-          @click="index = imageIndex"
           :style="{ backgroundImage: 'url(' + image + ')', width: '300px', height: '200px' }"
-        ></div>
+          class="image"
+          @click="index = imageIndex"
+        />
       </div>
     </div>
     <div class="title">{{ post.title }}</div>
@@ -34,7 +43,7 @@
 import config from '~/nuxt.config'
 
 export default {
-  name: 'post-details',
+  name: 'PostDetails',
   props: {
     post: {
       type: Object,
@@ -142,4 +151,3 @@ export default {
   box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 </style>
-
