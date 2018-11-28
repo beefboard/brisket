@@ -2,12 +2,21 @@
   <div class="container">
     <div class="top">
       <div class="details">
-        <nuxt-link :to="`/profiles/${post.author}`" class="author">{{ post.author }}</nuxt-link>
+        <nuxt-link 
+          :to="`/profiles/${post.author}`" 
+          class="author">{{ post.author }}</nuxt-link>
         <div class="date">{{ new Date(post.date) | moment("dddd, MMMM Do YYYY") }}</div>
-        <div v-if="!post.approved" class="info">Awaiting approval</div>
+        <div 
+          v-if="!post.approved" 
+          class="info">Awaiting approval</div>
       </div>
-      <div v-if="images.length > 0" class="images">
-        <gallery :images="images" :index="index" @close="index = null"/>
+      <div 
+        v-if="images.length > 0" 
+        class="images">
+        <gallery 
+          :images="images" 
+          :index="index" 
+          @close="index = null"/>
         <div
           v-for="(image, imageIndex) in images"
           :key="imageIndex"
@@ -20,7 +29,9 @@
     <div class="title">{{ post.title }}</div>
     <div class="main">
       <div class="content">
-        <div v-for="(paragraph, index) of post.content.split('\n')" :key="index">{{ paragraph }}</div>
+        <div 
+          v-for="(paragraph, index) of post.content.split('\n')" 
+          :key="index">{{ paragraph }}</div>
       </div>
     </div>
   </div>
