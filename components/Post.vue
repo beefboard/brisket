@@ -1,12 +1,7 @@
 <template>
-  <nuxt-link
-    :to="`/posts/${post.id}`">
-    <div 
-      :class="{ pinned: post.pinned }" 
-      class="post">
-      <div 
-        v-if="post.numImages > 0" 
-        class="post-img">
+  <nuxt-link :to="`/posts/${post.id}`">
+    <div :class="{ pinned: post.pinned }" class="post">
+      <div v-if="post.numImages > 0" class="post-img">
         <img :src="`${api}/v1/posts/${post.id}/images/0`">
       </div>
       <div class="details">
@@ -14,13 +9,8 @@
           <div class="top">
             <div class="title">{{ post.title }}</div>
             <div class="top-right">
-              <div 
-                v-if="!post.approved" 
-                class="info">Awaiting approval</div>
-              <fa 
-                v-if="post.pinned" 
-                :icon="faMapPin" 
-                class="pin"/>
+              <div v-if="!post.approved" class="info">Awaiting approval</div>
+              <fa v-if="post.pinned" :icon="faMapPin" class="pin"/>
             </div>
           </div>
           <div class="content">{{ post.content }}</div>
@@ -30,22 +20,20 @@
           </div>
         </div>
         <div class="details-right">
-          <div
-            id="vote-button-up"
-            @click="vote($event, 1)">
+          <div id="vote-button-up" @click="vote($event, 1)">
             <fa
               :icon="faChevronUp"
               :class="{ 'vote-button-active': voteDirection > 0 }"
-              class="vote-button"/>
+              class="vote-button"
+            />
           </div>
           <div>{{ post.votes.grade }}</div>
-          <div
-            id="vote-button-down"
-            @click="vote($event, -1)">
-            <fa 
+          <div id="vote-button-down" @click="vote($event, -1)">
+            <fa
               :icon="faChevronDown"
               :class="{ 'vote-button-active': voteDirection < 0 }"
-              class="vote-button"/>
+              class="vote-button"
+            />
           </div>
         </div>
       </div>
@@ -54,7 +42,6 @@
 </template>
 
 <script>
-import config from '~/nuxt.config'
 import {
   faMapPin,
   faChevronDown,
@@ -62,16 +49,16 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 
 export default {
-  name: 'RecursiveList',
+  name: 'Post',
   props: {
     post: {
       type: Object,
       required: true
     }
   },
-  data() {
+  data({ $store }) {
     return {
-      api: config.axios.baseURL,
+      api: $store.state.API_URL,
       voting: false
     }
   },

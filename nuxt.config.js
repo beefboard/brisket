@@ -4,7 +4,7 @@ module.exports = {
   mode: 'universal',
 
   env: {
-    baseUrl:
+    API:
       process.env.API_URL ||
       (process.env.NODE_ENV == 'development' && false
         ? 'http://localhost:2832'
@@ -59,7 +59,7 @@ module.exports = {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    '~/plugins/axiosTokenInjector',
+    '~/plugins/axios',
     '~/plugins/vue-moment',
     '~/plugins/textarea',
     '~plugins/modal',
@@ -84,13 +84,6 @@ module.exports = {
       }
     ],
     component: 'fa'
-  },
-  /*
-  ** Axios module configuration
-  */
-  axios: {
-    baseURL: process.env.baseUrl,
-    timeout: 1000
   },
 
   /**

@@ -1,29 +1,30 @@
-import axiosTokenInjector from './axiosTokenInjector'
+import axios from './axios'
 
-describe('axiosTokenInjector', () => {
+describe('plugins/axios', () => {
   let mockStore
   let mockAxios
 
-  beforeAll(() => {
+  beforeEach(() => {
     mockStore = {
       state: {
         token: null
       }
     }
 
-    mockAxios = {}
+    mockAxios = {
+      defaults: {},
+      onRequest: jest.fn()
+    }
   })
 
   it('should add hook to onRequest', () => {
-    mockAxios.onRequest = jest.fn()
-    axiosTokenInjector({ $axios: mockAxios, store: mockStore })
+    axios({ $axios: mockAxios, store: mockStore })
     expect(mockAxios.onRequest).toHaveBeenCalledWith(expect.any(Function))
   })
 
   test('hook should add token from store to config headers', () => {
     mockStore.state.token = 'testtoken'
-    mockAxios.onRequest = jest.fn()
-    axiosTokenInjector({ $axios: mockAxios, store: mockStore })
+    axios({ $axios: mockAxios, store: mockStore })
 
     const requestHook = mockAxios.onRequest.mock.calls[0][0]
     const mockConfig = {
@@ -36,8 +37,7 @@ describe('axiosTokenInjector', () => {
 
   test('hook should not add token when token is not set', () => {
     mockStore.state.token = null
-    mockAxios.onRequest = jest.fn()
-    axiosTokenInjector({ $axios: mockAxios, store: mockStore })
+    axios({ $axios: mockAxios, store: mockStore })
 
     const requestHook = mockAxios.onRequest.mock.calls[0][0]
     const mockConfig = {
@@ -46,5 +46,17 @@ describe('axiosTokenInjector', () => {
     requestHook(mockConfig)
 
     expect(mockConfig.headers['x-access-token']).toBe(undefined)
+  })
+
+  it('should add store state API_URL as default baseURL', () => {
+    mockStore.state.API_URL = 'https://testing123.com'
+    axios({ $axios: mockAxios, store: mockStore })
+
+    expect(mockAxios.defaults.baseURL).toBe(mockStore.state.API_URL)
+  })
+
+  it('should add timeout 1000 to defaults', () => {
+    axios({ $axios: mockAxios, store: mockStore })
+    expect(mockAxios.defaults.timeout).toBe(1000)
   })
 })

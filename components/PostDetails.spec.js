@@ -38,7 +38,8 @@ describe('PostDetails', () => {
         $store: {
           dispatch: jest.fn(),
           state: {
-            auth: mockAuth
+            auth: mockAuth,
+            baseURL: 'https://test.com'
           }
         },
         $router: {

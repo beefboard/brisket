@@ -1,6 +1,7 @@
 export const state = () => ({
   token: null,
-  auth: null
+  auth: null,
+  API_URL: process.env.API
 })
 
 export const mutations = {
