@@ -4,33 +4,33 @@
       <div>Filter</div>
       <div>
         <input
+          v-model="search"
           type="radio"
           name="filter"
-          v-model="search"
           value="new"
-          v-on:change="queryChange"> New
-      <div>
-        <input
-          type="radio"
-          name="filter"
-          v-model="search"
-          value="pinned"
-          v-on:change="queryChange"> Pinned
+          @change="queryChange"> New
+        <div>
+          <input
+            v-model="search"
+            type="radio"
+            name="filter"
+            value="pinned"
+            @change="queryChange"> Pinned
         </div>
-      <div v-if="admin">
-        <input
-          type="radio"
-          name="filter"
-          v-model="search"
-          value="unapproved"
-          v-on:change="queryChange"> Unapproved
+        <div v-if="admin">
+          <input
+            v-model="search"
+            type="radio"
+            name="filter"
+            value="unapproved"
+            @change="queryChange"> Unapproved
         </div>
       </div>
     </div>
     <div class="posts">
       <post
-        :post="post"
         v-for="(post, index) of posts"
+        :post="post"
         :key="index"/>
     </div>
   </div>

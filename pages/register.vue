@@ -38,7 +38,9 @@
         <div class="error-message">
           {{ errorMessage }}
         </div>
-        <button class="beefbutton register-button" :disabled="!validForm || loading">Register</button>
+        <button 
+          :disabled="!validForm || loading" 
+          class="beefbutton register-button">Register</button>
       </form>
     </div>
   </div>

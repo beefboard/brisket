@@ -4,29 +4,31 @@
       <div class="title">Posts</div>
       <div class="posts">
         <div
-          class="top-pinned"
-          v-if="pinnedPosts.length > 0">
+          v-if="pinnedPosts.length > 0"
+          class="top-pinned">
           <post
-            :post="post"
             v-for="(post, index) of pinnedPosts"
+            :post="post"
             :key="index"/>
         </div>
-        <div class="no-posts" v-if="posts.length < 1">
+        <div 
+          v-if="posts.length < 1" 
+          class="no-posts">
           <div>No new posts</div>
         </div>
         <post
-          :post="post"
           v-for="(post, index) of posts"
+          :post="post"
           :key="index"/>
       </div>
     </div>
     <div class="sidebar">
       <div
-        class="posts pinned"
-        v-if="pinnedPosts.length > 0">
+        v-if="pinnedPosts.length > 0"
+        class="posts pinned">
         <post
-          :post="post"
           v-for="(post, index) of pinnedPosts"
+          :post="post"
           :key="index"/>
         <nuxt-link
           to="/posts/?pinned=true">
@@ -34,8 +36,8 @@
         </nuxt-link>
       </div>
       <div
-        class="info-message"
-        v-if="pinnedPosts.length < 1">
+        v-if="pinnedPosts.length < 1"
+        class="info-message">
         No pinned posts
       </div>
     </div>

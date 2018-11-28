@@ -11,14 +11,21 @@ cache:
   paths:
     - node_modules/
 
+before_script:
+  - npm install
+
 test:
   stage: test
   script:
-    - npm install
     - npm test
   artifacts:
     paths:
       - coverage/
+
+lint:
+  stage: test
+  script:
+    - npm run lint
 
 build:
   stage: build

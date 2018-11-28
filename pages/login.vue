@@ -18,8 +18,8 @@
           <div class="error">{{ errorMessage }}</div>
         </div>
         <button
-          class="beefbutton login-button"
           :disabled="loginDisabled"
+          class="beefbutton login-button"
           type="submit">
           Login
         </button>
