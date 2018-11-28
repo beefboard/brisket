@@ -49,7 +49,7 @@ export default {
 
       return {
         id: params.id,
-        api: process.env.API,
+        api: store.state.API_URL,
         admin: admin,
         post: post
       }

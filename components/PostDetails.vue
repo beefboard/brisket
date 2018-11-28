@@ -50,7 +50,9 @@ export default {
     const images = []
 
     for (let i = 0; i < this.post.numImages; i++) {
-      images.push(`${process.env.API}/v1/posts/${this.post.id}/images/${i}`)
+      images.push(
+        `${$store.state.API_URL}/v1/posts/${this.post.id}/images/${i}`
+      )
     }
 
     return {

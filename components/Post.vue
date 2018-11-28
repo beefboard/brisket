@@ -71,7 +71,7 @@ export default {
   },
   data({ $store }) {
     return {
-      api: process.env.API,
+      api: $store.state.API_URL,
       voting: false
     }
   },

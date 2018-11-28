@@ -48,11 +48,17 @@ describe('plugins/axios', () => {
     expect(mockConfig.headers['x-access-token']).toBe(undefined)
   })
 
-  it('should add store state API_URL as default baseURL', () => {
+  test('hook should add store state API_URL to baseURL', () => {
     mockStore.state.API_URL = 'https://testing123.com'
     axios({ $axios: mockAxios, store: mockStore })
 
-    expect(mockAxios.defaults.baseURL).toBe(mockStore.state.API_URL)
+    const requestHook = mockAxios.onRequest.mock.calls[0][0]
+    const mockConfig = {
+      headers: {}
+    }
+    requestHook(mockConfig)
+
+    expect(mockConfig.baseURL).toBe(mockStore.state.API_URL)
   })
 
   it('should add timeout 1000 to defaults', () => {

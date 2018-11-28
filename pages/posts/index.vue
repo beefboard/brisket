@@ -81,7 +81,7 @@ export default {
         search: search
       }
     } catch (e) {
-      console.log(e)
+      // console.log(e)
       error('Error loading posts')
     }
   },

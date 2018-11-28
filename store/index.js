@@ -31,6 +31,8 @@ export const actions = {
         ? 'http://localhost:2832'
         : 'https://api.beefboard.mooo.com')
 
+    console.log(`Process API_URL: ${API_URL}`)
+
     store.state.token = token || null
     store.state.API_URL = API_URL
   },
