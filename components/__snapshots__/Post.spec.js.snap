@@ -16,13 +16,17 @@ exports[`Post renders properly 1`] = `
         <div class="content">sadfasdfsadf sdsdsdg</div>
         <div class="sub-details">
           <div class="author">test</div>
-          <div class="when">"2017-12-28T00:00:00.000Z"</div>
+          <div class="when">a year ago</div>
         </div>
       </div>
       <div class="details-right">
-        <div icon="[object Object]" class="vote-button"></div>
+        <div id="vote-button-up">
+          <div icon="[object Object]" class="vote-button"></div>
+        </div>
         <div>1</div>
-        <div icon="[object Object]" class="vote-button"></div>
+        <div id="vote-button-down">
+          <div icon="[object Object]" class="vote-button"></div>
+        </div>
       </div>
     </div>
   </div>

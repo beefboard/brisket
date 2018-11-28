@@ -11,7 +11,7 @@
             <div class="title">{{ post.title }}</div>
             <div class="top-right">
               <div v-if="!post.approved" class="info">Awaiting approval</div>
-              <fa v-if="post.pinned" :icon="faMapPin" style="font-size: 20px; transform: rotate(20deg)"/>
+              <fa class="pin" v-if="post.pinned" :icon="faMapPin"/>
             </div>
           </div>
           <div class="content">{{ post.content }}</div>
@@ -21,16 +21,22 @@
           </div>
         </div>
         <div class="details-right">
-          <fa
-            :icon="faChevronUp"
+          <div
             @click="vote($event, 1)"
-            class="vote-button"
-            v-bind:class="{ 'vote-button-active': voteDirection > 0 }"/>
+            id="vote-button-up">
+            <fa
+              :icon="faChevronUp"
+              class="vote-button"
+              v-bind:class="{ 'vote-button-active': voteDirection > 0 }"/>
+          </div>
           <div>{{ post.votes.grade }}</div>
-          <fa :icon="faChevronDown"
-            @click="vote($event, -1)"
-            class="vote-button"
-            v-bind:class="{ 'vote-button-active': voteDirection < 0 }"/>
+          <div
+            id="vote-button-down"
+            @click="vote($event, -1)">
+            <fa :icon="faChevronDown"
+              class="vote-button"
+              v-bind:class="{ 'vote-button-active': voteDirection < 0 }"/>
+          </div>
         </div>
       </div>
     </div>
@@ -51,11 +57,6 @@ export default {
     post: {
       type: Object,
       required: true
-    },
-    colour: {
-      type: String,
-      required: false,
-      default: 'white'
     }
   },
   data() {
@@ -88,15 +89,14 @@ export default {
           vote: value
         })
 
-        if (this.auth) {
-          const currentGrading = this.post.votes.user
-          this.post.votes.grade =
-            parseInt(this.post.votes.grade) - currentGrading
-        }
-        this.post.votes.grade = parseInt(this.post.votes.grade) + value
-        this.post.votes.user = value
+        const votes = this.post.votes
+
+        const currentGrading = votes.user
+        votes.grade = votes.grade - currentGrading
+        votes.grade = votes.grade + value
+        votes.user = value
       } catch (e) {
-        console.log(e)
+        // An error
       }
 
       this.voting = false
@@ -135,6 +135,11 @@ export default {
   margin-bottom: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.pin {
+  font-size: 20px;
+  transform: rotate(20deg);
 }
 
 .pinned {

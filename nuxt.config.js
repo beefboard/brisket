@@ -3,6 +3,14 @@ const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
+  env: {
+    baseUrl:
+      process.env.API_URL ||
+      (process.env.NODE_ENV == 'development' && false
+        ? 'http://localhost:2832'
+        : 'https://api.beefboard.mooo.com')
+  },
+
   /*
   ** Headers of the page
   */
@@ -81,11 +89,7 @@ module.exports = {
   ** Axios module configuration
   */
   axios: {
-    baseURL:
-      process.env.API_URL ||
-      (process.env.NODE_ENV == 'development' && false
-        ? 'http://localhost:2832'
-        : 'https://api.beefboard.mooo.com'),
+    baseURL: process.env.baseUrl,
     timeout: 1000
   },
 
