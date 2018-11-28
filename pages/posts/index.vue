@@ -3,18 +3,18 @@
     <div class="filters">
       <div>Filter</div>
       <div>
-        <input 
-          v-model="search" 
-          type="radio" 
-          name="filter" 
-          value="new" 
+        <input
+          v-model="search"
+          type="radio"
+          name="filter"
+          value="new"
           @change="queryChange"> New
         <div>
-          <input 
-            v-model="search" 
-            type="radio" 
-            name="filter" 
-            value="pinned" 
+          <input
+            v-model="search"
+            type="radio"
+            name="filter"
+            value="pinned"
             @change="queryChange"> Pinned
         </div>
         <div v-if="admin">
@@ -29,9 +29,9 @@
       </div>
     </div>
     <div class="posts">
-      <post 
-        v-for="(post, index) of posts" 
-        :post="post" 
+      <post
+        v-for="(post, index) of posts"
+        :post="post"
         :key="index"/>
     </div>
   </div>

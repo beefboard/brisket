@@ -1,7 +1,13 @@
 export const state = () => ({
   token: null,
   auth: null,
-  API_URL: process.env.API
+  API_URL: process.env.API_URL
+})
+
+export const getters = () => ({
+  API_URL: () => {
+    return
+  }
 })
 
 export const mutations = {
@@ -19,7 +25,14 @@ export const actions = {
   // state
   async nuxtServerInit(store, context) {
     const token = context.app.$cookies.get('AUTH_TOKEN')
+    const API_URL =
+      process.env.API_URL ||
+      (process.env.NODE_ENV == 'development' && false
+        ? 'http://localhost:2832'
+        : 'https://api.beefboard.mooo.com')
+
     store.state.token = token || null
+    store.state.API_URL = API_URL
   },
 
   /**

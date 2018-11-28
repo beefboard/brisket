@@ -2,20 +2,20 @@
   <div class="container">
     <div class="top">
       <div class="details">
-        <nuxt-link 
-          :to="`/profiles/${post.author}`" 
+        <nuxt-link
+          :to="`/profiles/${post.author}`"
           class="author">{{ post.author }}</nuxt-link>
         <div class="date">{{ new Date(post.date) | moment("dddd, MMMM Do YYYY") }}</div>
-        <div 
-          v-if="!post.approved" 
+        <div
+          v-if="!post.approved"
           class="info">Awaiting approval</div>
       </div>
-      <div 
-        v-if="images.length > 0" 
+      <div
+        v-if="images.length > 0"
         class="images">
-        <gallery 
-          :images="images" 
-          :index="index" 
+        <gallery
+          :images="images"
+          :index="index"
           @close="index = null"/>
         <div
           v-for="(image, imageIndex) in images"
@@ -29,8 +29,8 @@
     <div class="title">{{ post.title }}</div>
     <div class="main">
       <div class="content">
-        <div 
-          v-for="(paragraph, index) of post.content.split('\n')" 
+        <div
+          v-for="(paragraph, index) of post.content.split('\n')"
           :key="index">{{ paragraph }}</div>
       </div>
     </div>
@@ -50,9 +50,7 @@ export default {
     const images = []
 
     for (let i = 0; i < this.post.numImages; i++) {
-      images.push(
-        `${$store.state.API_URL}/v1/posts/${this.post.id}/images/${i}`
-      )
+      images.push(`${process.env.API}/v1/posts/${this.post.id}/images/${i}`)
     }
 
     return {

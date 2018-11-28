@@ -3,14 +3,6 @@ const pkg = require('./package')
 module.exports = {
   mode: 'universal',
 
-  env: {
-    API:
-      process.env.API_URL ||
-      (process.env.NODE_ENV == 'development' && false
-        ? 'http://localhost:2832'
-        : 'https://api.beefboard.mooo.com')
-  },
-
   /*
   ** Headers of the page
   */

@@ -11,8 +11,8 @@
             :post="post"
             :key="index"/>
         </div>
-        <div 
-          v-if="posts.length < 1" 
+        <div
+          v-if="posts.length < 1"
           class="no-posts">
           <div>No new posts</div>
         </div>

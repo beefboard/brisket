@@ -2,28 +2,28 @@
   <div class="page-container">
     <div class="page">
       <div class="top">
-        <nuxt-link 
-          class="back" 
+        <nuxt-link
+          class="back"
           to="/">
           <fa :icon="faChevronLeft"/>Back to posts
         </nuxt-link>
-        <div 
-          v-if="admin" 
+        <div
+          v-if="admin"
           class="admin">
-          <button 
-            v-if="!post.approved" 
-            class="approve-button beefbutton" 
+          <button
+            v-if="!post.approved"
+            class="approve-button beefbutton"
             @click="approve">Approve</button>
-          <button 
-            v-if="post.approved && !post.pinned" 
-            class="beefbutton" 
+          <button
+            v-if="post.approved && !post.pinned"
+            class="beefbutton"
             @click="pin">Pin</button>
-          <button 
-            v-if="post.approved && post.pinned" 
-            class="beefbutton" 
+          <button
+            v-if="post.approved && post.pinned"
+            class="beefbutton"
             @click="unpin">Unpin</button>
-          <button 
-            class="beefbutton" 
+          <button
+            class="beefbutton"
             @click="confirmRemove">
             <fa :icon="faTrashAlt"/>
           </button>
@@ -49,7 +49,7 @@ export default {
 
       return {
         id: params.id,
-        api: store.state.API_URL,
+        api: process.env.API,
         admin: admin,
         post: post
       }
