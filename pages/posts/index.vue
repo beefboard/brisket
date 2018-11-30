@@ -32,7 +32,8 @@
       <post
         v-for="(post, index) of posts"
         :post="post"
-        :key="index"/>
+        :key="index"
+        class="browse-post"/>
     </div>
   </div>
 </template>
@@ -104,11 +105,18 @@ export default {
 <style scoped>
 .posts {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   flex: 1;
   margin-left: 8rem;
   margin-right: 1rem;
   min-width: 0;
+}
+
+.browse-post {
+  width: 20rem;
+  margin-right: 1rem;
+  margin-left: 1rem;
 }
 
 .filters {
@@ -117,6 +125,19 @@ export default {
   display: flex;
   flex-direction: column;
   font-size: 0.7rem;
+}
+
+@media screen and (max-width: 800px) {
+  .posts {
+    flex-direction: column;
+    flex-wrap: unset;
+  }
+
+  .browse-post {
+    width: unset;
+    margin-left: 0rem;
+    margin-right: 0rem;
+  }
 }
 
 @media screen and (max-width: 600px) {

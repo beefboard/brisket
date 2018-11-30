@@ -50,6 +50,7 @@
     "lint-staged": "^8.0.4",
     "nodemon": "^1.18.7",
     "prettier": "1.14.3",
+    "puppeteer": "^1.11.0",
     "vue": "^2.5.17",
     "vue-jest": "^2.6.0",
     "vuex": "^3.0.1"

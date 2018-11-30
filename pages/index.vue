@@ -111,7 +111,7 @@ export default {
 .title {
   margin-left: 0.5rem;
   font-size: 5rem;
-  font-weight: bold;
+  font-weight: lighter;
   color: black;
   margin-bottom: 1rem;
 }
