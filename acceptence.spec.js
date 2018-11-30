@@ -1,6 +1,5 @@
-import supertest from 'supertest'
+import puppeteer from 'puppeteer'
 import { execSync } from 'child_process'
-import * as uuid from 'uuid'
 
 const HOST = process.env.ACCEPTENCE_SERVER || 'http://localhost:2737'
 
@@ -30,12 +29,6 @@ beforeAll(async () => {
       return setTimeout(resolve, 200)
     })
   }
-})
-
-afterAll(() => {
-  try {
-    execSync('docker-compose -f docker-compose.acceptence.yml down')
-  } catch (_) {}
 })
 
 describe('acceptence', () => {
