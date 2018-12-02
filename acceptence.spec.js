@@ -48,7 +48,7 @@ describe('acceptence', () => {
     expect(await page.title()).toBe('Home - Beefboard')
   })
 
-  it('allows login', async () => {
+  it('allows login, and shows profile after login', async () => {
     browser = await createBrowser()
     const page = await browser.newPage()
     await page.goto(`${HOST}/login`)
@@ -71,10 +71,10 @@ describe('acceptence', () => {
     const profileLink = await page.$eval(
       'a[href="/profiles/admin"]',
       element => {
-        return element.innerHTML
+        return element.outerHTML
       }
     )
 
-    expect(profileLink).toBe('test')
+    expect(profileLink).toBeTruthy()
   })
 })
