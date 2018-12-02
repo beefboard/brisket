@@ -58,6 +58,18 @@ export default {
       error({ statusCode: 404, message: 'Post not found' })
     }
   },
+
+  head() {
+    let title = this.post.title
+    if (title.length > 20) {
+      title = title.substring(0, 20) + '...'
+    }
+
+    return {
+      title: `${title} - Beefboard`
+    }
+  },
+
   validate({ redirect, params, $axios }) {
     if (!params.id) {
       return redirect('/')

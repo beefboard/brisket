@@ -23,6 +23,13 @@ export default {
       error({ statusCode: 404, message: 'User not found' })
     }
   },
+
+  head() {
+    return {
+      title: `${this.username}'s profile - Beefboard`
+    }
+  },
+
   validate({ redirect, params }) {
     if (!params.id) {
       return redirect('/')

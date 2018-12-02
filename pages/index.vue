@@ -51,6 +51,7 @@ export default {
   components: {
     Post
   },
+
   data() {
     return {
       posts: [],
@@ -58,6 +59,13 @@ export default {
       pinnedTruncated: false
     }
   },
+
+  head() {
+    return {
+      title: 'Home - Beefboard'
+    }
+  },
+
   async asyncData({ store, error, route }) {
     try {
       const posts = await store.dispatch('getPosts')

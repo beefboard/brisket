@@ -38,8 +38,8 @@
         <div class="error-message">
           {{ errorMessage }}
         </div>
-        <button 
-          :disabled="!validForm || loading" 
+        <button
+          :disabled="!validForm || loading"
           class="beefbutton register-button">Register</button>
       </form>
     </div>
@@ -62,6 +62,12 @@ export default {
       validUser: true,
       usernameTaken: false,
       response: null
+    }
+  },
+
+  head() {
+    return {
+      title: 'Register - Beefboard'
     }
   },
 

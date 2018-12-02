@@ -2,12 +2,12 @@
   <div class="page-container">
     <div class="form">
       <div>
-        <div 
-          v-if="images.length > 0" 
+        <div
+          v-if="images.length > 0"
           class="images">
-          <gallery 
-            :images="images" 
-            :index="index" 
+          <gallery
+            :images="images"
+            :index="index"
             @close="index = null"/>
           <div
             v-for="(image, imageIndex) in images"
@@ -30,8 +30,8 @@
             class="files"
             multiple
             @change="handleFilesUpload()">
-          <button 
-            class="beefbutton upload-button" 
+          <button
+            class="beefbutton upload-button"
             @click="uploadFile">Attach photo(s)</button>
         </div>
         <textarea-autosize
@@ -41,8 +41,8 @@
           style="border: none; outline: none; font-size: 1rem;"
           @blur.native="onBlurTextarea"
         />
-        <button 
-          class="beefbutton submit-button" 
+        <button
+          class="beefbutton submit-button"
           @click="post">Submit</button>
       </div>
     </div>
@@ -60,6 +60,13 @@ export default {
       images: []
     }
   },
+
+  head() {
+    return {
+      title: `New post - Beefboard`
+    }
+  },
+
   methods: {
     async post() {
       if (!this.title || !this.content) {

@@ -1,29 +1,31 @@
-import puppeteer from 'puppeteer'
-import { execSync } from 'child_process'
+const puppeteer = require('puppeteer')
+const request = require('supertest')
 
-const HOST = process.env.ACCEPTENCE_SERVER || 'http://localhost:2737'
+const HOST = process.env.ACCEPTENCE_SERVER || 'http://localhost:3000'
 
-jest.setTimeout(60000)
+jest.setTimeout(20000)
 
-/**
- * Start the docker network with the container we have built.
- *
- * This will allow us to test the container in issolation with
- * the postgres database.
- */
+let browser = null
+
+async function createBrowser() {
+  return await puppeteer.launch({
+    slowMo: 0,
+    headless: true
+  })
+}
 
 beforeAll(async () => {
-  execSync('node server')
-
   // Wait for server to be up
   while (true) {
     try {
-      const response = await supertest(HOST).get('/')
+      const response = await request(HOST).get('/')
 
       if (response.status === 200) {
         break
       }
-    } catch (e) {}
+    } catch (e) {
+      console.log(e)
+    }
 
     await new Promise(resolve => {
       return setTimeout(resolve, 200)
@@ -31,97 +33,48 @@ beforeAll(async () => {
   }
 })
 
+afterEach(async () => {
+  if (browser) {
+    await browser.close()
+  }
+})
+
 describe('acceptence', () => {
   it('responds', async () => {
-    const response = await supertest(HOST).get('/')
-    expect(response.status).toBe(200)
+    browser = await createBrowser()
+    const page = await browser.newPage()
+    await page.goto(`${HOST}`)
+
+    expect(await page.title()).toBe('Home - Beefboard')
   })
 
-  it('allows votes to be made', async () => {
-    const postId = uuid.v1()
-    await supertest(HOST)
-      .put(`/v1/grades/${postId}`)
-      .send({
-        user: 'test',
-        grade: -1
+  it('allows login', async () => {
+    browser = await createBrowser()
+    const page = await browser.newPage()
+    await page.goto(`${HOST}/login`)
+
+    await page.click('input[type=text]')
+    await page.keyboard.type('admin')
+
+    await page.click('input[type=password]')
+    await page.keyboard.type('admin')
+
+    await Promise.all([
+      page.click('button[type=submit]'),
+      page.waitForNavigation({
+        waitUntil: 'networkidle0'
       })
+    ])
 
-    const response = await supertest(HOST)
-      .get(`/v1/grades/${postId}`)
-      .query({
-        user: 'test'
-      })
+    expect(await page.title()).toBe('Home - Beefboard')
 
-    expect(response.body).toEqual({
-      grade: -1,
-      user: -1
-    })
-  })
+    const profileLink = await page.$eval(
+      'a[href="/profiles/admin"]',
+      element => {
+        return element.innerHTML
+      }
+    )
 
-  it('sums votes', async () => {
-    const postId = uuid.v1()
-    await supertest(HOST)
-      .put(`/v1/grades/${postId}`)
-      .send({
-        user: 'test',
-        grade: 1
-      })
-
-    await supertest(HOST)
-      .put(`/v1/grades/${postId}`)
-      .send({
-        user: 'fsdfasdf',
-        grade: 1
-      })
-
-    await supertest(HOST)
-      .put(`/v1/grades/${postId}`)
-      .send({
-        user: 'werweir',
-        grade: 1
-      })
-
-    await supertest(HOST)
-      .put(`/v1/grades/${postId}`)
-      .send({
-        user: 'sdlfksdf',
-        grade: -1
-      })
-
-    const response = await supertest(HOST)
-      .get(`/v1/grades/${postId}`)
-      .query({
-        user: 'test'
-      })
-
-    expect(response.body).toEqual({
-      grade: 2,
-      user: 1
-    })
-
-    const response2 = await supertest(HOST)
-      .get(`/v1/grades/${postId}`)
-      .query({
-        user: 'sdlfksdf'
-      })
-
-    expect(response2.body).toEqual({
-      grade: 2,
-      user: -1
-    })
-  })
-
-  it('allows queries for posts without votes', async () => {
-    const postId = uuid.v1()
-    const response = await supertest(HOST)
-      .get(`/v1/grades/${postId}`)
-      .query({
-        user: 'sdfgdf'
-      })
-
-    expect(response.body).toEqual({
-      user: 0,
-      grade: 0
-    })
+    expect(profileLink).toBe('test')
   })
 })

@@ -1,12 +1,9 @@
 module.exports = {
-  moduleFileExtensions: ['js'],
+  moduleFileExtensions: ['js', 'json'],
   watchman: false,
   moduleNameMapper: {
     '^~/(.*)$': '<rootDir>/$1',
     '^~~/(.*)$': '<rootDir>/$1'
   },
-  testRegex: 'acceptence.spec.js?$',
-  transform: {
-    '^.+\\.js$': '<rootDir>/node_modules/babel-jest'
-  }
+  testRegex: 'acceptence.spec.js?$'
 }

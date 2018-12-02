@@ -39,6 +39,12 @@ export default {
     }
   },
 
+  head() {
+    return {
+      title: 'Login - Beefboard'
+    }
+  },
+
   async asyncData({ store, redirect }) {
     if (store.state.auth) {
       redirect('/')
