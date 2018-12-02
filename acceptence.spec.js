@@ -3,7 +3,7 @@ const request = require('supertest')
 
 const HOST = process.env.ACCEPTENCE_SERVER || 'http://localhost:3000'
 
-jest.setTimeout(20000)
+jest.setTimeout(60000)
 
 let browser = null
 
@@ -12,6 +12,17 @@ async function createBrowser() {
     slowMo: 0,
     headless: true
   })
+}
+
+async function createPage() {
+  const page = await browser.newPage()
+  await page.setRequestInterception(true)
+  page.on('request', request => {
+    if (request.resourceType() === 'image') request.abort()
+    else request.continue()
+  })
+
+  return page
 }
 
 beforeAll(async () => {
@@ -42,15 +53,15 @@ afterEach(async () => {
 describe('acceptence', () => {
   it('responds', async () => {
     browser = await createBrowser()
-    const page = await browser.newPage()
+    const page = await createPage()
     await page.goto(`${HOST}`)
 
     expect(await page.title()).toBe('Home - Beefboard')
   })
 
-  it('allows login, and shows profile after login', async () => {
+  it('allows login, shows profile after login, logout navigates back to home', async () => {
     browser = await createBrowser()
-    const page = await browser.newPage()
+    const page = await createPage()
     await page.goto(`${HOST}/login`)
 
     await page.click('input[type=text]')
@@ -68,13 +79,32 @@ describe('acceptence', () => {
 
     expect(await page.title()).toBe('Home - Beefboard')
 
-    const profileLink = await page.$eval(
-      'a[href="/profiles/admin"]',
-      element => {
-        return element.outerHTML
-      }
-    )
+    await page.evaluate(() => {
+      document.querySelector('a[href="/profiles/admin"]').click()
+    })
+    await page.waitFor(1000)
 
-    expect(profileLink).toBeTruthy()
+    expect(await page.title()).toBe("admin's profile - Beefboard")
+
+    await page.evaluate(() => {
+      document.querySelector('a.logout').click()
+    })
+    await page.waitFor(1000)
+
+    expect(await page.title()).toBe('Home - Beefboard')
+
+    const profileLink = await page.$('a[href="/profiles/admin"]')
+    expect(profileLink).toBeNull()
+
+    const logoutButton = await page.$('a.logout')
+    expect(logoutButton).toBeNull()
+  })
+
+  test('new post redirects to login when not logged in', async () => {
+    browser = await createBrowser()
+    const page = await createPage()
+    await page.goto(`${HOST}/posts/new`)
+
+    expect(await page.url()).toBe(`${HOST}/login`)
   })
 })
