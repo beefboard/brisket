@@ -30,7 +30,7 @@ lint:
 
 acceptence:
   stage: acceptence
-  image: alekzonder/puppeteer
+  image: buildkite/puppeteer
   script:
     - npm run build
     - npm run acceptence
