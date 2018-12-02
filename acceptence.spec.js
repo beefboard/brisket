@@ -10,7 +10,14 @@ let browser = null
 async function createBrowser() {
   return await puppeteer.launch({
     slowMo: 0,
-    headless: true
+    headless: true,
+    args: [
+      '--no-sandbox',
+      '--disable-setuid-sandbox',
+      // This will write shared memory files into /tmp instead of /dev/shm,
+      // because Docker’s default for /dev/shm is 64MB
+      '--disable-dev-shm-usage'
+    ]
   })
 }
 
