@@ -1,7 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`index renders properly 1`] = `
-<section class="container"><a to="/posts/new">New story</a>
-  <div class="posts"></div>
-</section>
+<div class="page-container">
+  <div class="main-posts">
+    <div class="title">Posts</div>
+    <div class="posts">
+      <!---->
+      <div class="no-posts">
+        <div>No new posts</div>
+      </div>
+    </div>
+  </div>
+  <div class="sidebar">
+    <!---->
+    <div class="info-message">
+      No pinned posts
+    </div>
+  </div>
+</div>
 `;

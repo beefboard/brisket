@@ -1,28 +1,30 @@
 <template>
-  <div class="container">
-    <form
-      method="post"
-      class="login"
-      @submit.prevent="login">
-      <div>
-        <input
-          v-model="username"
-          type="text"
-          placeholder="Username">
-        <input
-          v-model="password"
-          type="password"
-          placeholder="Password">
-        <div 
-          v-if="errorMessage" 
-          class="error">{{ errorMessage }}</div>
-      </div>
-      <button
-        :disabled="loginDisabled"
-        type="submit">
-        Login
-      </button>
-    </form>
+  <div class="page-container">
+    <div class="form-container">
+      <form
+        method="post"
+        class="login"
+        @submit.prevent="login">
+        <div class="title">Beefboard</div>
+        <div class="inputs">
+          <input
+            v-model="username"
+            type="text"
+            placeholder="Username">
+          <input
+            v-model="password"
+            type="password"
+            placeholder="Password">
+          <div class="error">{{ errorMessage }}</div>
+        </div>
+        <button
+          :disabled="loginDisabled"
+          class="beefbutton login-button"
+          type="submit">
+          Login
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -34,6 +36,12 @@ export default {
       password: null,
       loading: false,
       errorMessage: ''
+    }
+  },
+
+  head() {
+    return {
+      title: 'Login - Beefboard'
     }
   },
 
@@ -69,6 +77,7 @@ export default {
         if (e.response) {
           if (e.response.status == 401) {
             this.errorMessage = 'Invalid username or password'
+            this.password = ''
           } else if (e.response.status == 500) {
             this.errorMessage = 'Server error'
           }
@@ -81,18 +90,59 @@ export default {
 }
 </script>
 
-<style>
-.container {
-  width: 100%;
-  height: 100%;
+<style scoped>
+.form-container {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+}
+
+form {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  text-align: center;
+  text-transform: uppercase;
+  font-size: 3rem;
+  margin: 3rem;
+  margin-bottom: 5rem;
+}
+
+.inputs {
   display: flex;
   flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.error {
+  height: 1rem;
+  font-size: 1rem;
+  color: red;
+  text-align: center;
+}
+
+input {
+  width: 20rem;
+  border-style: none;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  background-color: #f1f1f1;
+  border-radius: 0.5rem;
+}
+
+input:focus {
+  outline: none;
 }
 
 .login {
   display: flex;
   flex-direction: column;
+}
+
+.login-button {
+  width: 100%;
 }
 </style>

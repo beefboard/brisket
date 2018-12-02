@@ -1,5 +1,7 @@
 {
   "editor.tabSize": 2,
-  "editor.formatOnSave": true,
-  "eslint.autoFixOnSave": true
+  "editor.formatOnSave": false,
+  "eslint.autoFixOnSave": true,
+  "prettier.disableLanguages": [],
+  "prettier.eslintIntegration": true
 }

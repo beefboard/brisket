@@ -37,15 +37,6 @@ describe('index', () => {
     }
     const wrapper = shallowMount(index, { data })
     const posts = wrapper.find('.posts')
-    expect(posts.findAll('.post').length).toBe(1)
-  })
-
-  it('should render data into post', () => {
-    mockData = {
-      posts: [{ title: 'Test post', content: 'test', author: 'me' }]
-    }
-    const wrapper = shallowMount(index, { data })
-    const post = wrapper.find('.post')
-    expect(post.html()).toBeTruthy()
+    expect(posts.findAll('post-stub').length).toBe(1)
   })
 })

@@ -1,6 +1,13 @@
 export const state = () => ({
   token: null,
-  auth: null
+  auth: null,
+  API_URL: process.env.API_URL
+})
+
+export const getters = () => ({
+  API_URL: () => {
+    return
+  }
 })
 
 export const mutations = {
@@ -18,7 +25,14 @@ export const actions = {
   // state
   async nuxtServerInit(store, context) {
     const token = context.app.$cookies.get('AUTH_TOKEN')
+    const API_URL =
+      process.env.API_URL ||
+      (process.env.NODE_ENV == 'development' && false
+        ? 'http://localhost:2832'
+        : 'https://api.beefboard.mooo.com')
+
     store.state.token = token || null
+    store.state.API_URL = API_URL
   },
 
   /**
@@ -37,7 +51,7 @@ export const actions = {
    * stored
    */
   async login({ commit }, details) {
-    const response = await this.$axios.put('/me', details)
+    const response = await this.$axios.put('/v1/me', details)
     this.$cookies.set('AUTH_TOKEN', response.data.token)
     commit('token', response.data.token)
   },
@@ -48,7 +62,7 @@ export const actions = {
    */
   async logout() {
     try {
-      await this.$axios.delete('/me')
+      await this.$axios.delete('/v1/me')
     } catch (_) {}
     this.dispatch('clearSession')
   },
@@ -58,7 +72,7 @@ export const actions = {
    * them in auth
    */
   async refreshAuth({ commit }) {
-    const response = await this.$axios.get('/me', { progress: false })
+    const response = await this.$axios.get('/v1/me', { progress: false })
     commit('auth', response.data)
   },
 
@@ -67,14 +81,14 @@ export const actions = {
    * login details
    */
   async register(_, details) {
-    await this.$axios.post('/accounts', details)
+    await this.$axios.post('/v1/accounts', details)
   },
 
   /**
    * Get details of the given user with id
    */
   async getUser(_, id) {
-    const response = await this.$axios.get(`/accounts/${id}`)
+    const response = await this.$axios.get(`/v1/accounts/${id}`)
     return response.data
   },
 
@@ -82,7 +96,7 @@ export const actions = {
    * Get posts with the given query
    */
   async getPosts(_, filter) {
-    const response = await this.$axios.get('/posts', {
+    const response = await this.$axios.get('/v1/posts', {
       params: filter
     })
 
@@ -90,7 +104,35 @@ export const actions = {
   },
 
   async getPost(_, id) {
-    const response = await this.$axios.get(`/posts/${id}`)
+    const response = await this.$axios.get(`/v1/posts/${id}`)
     return response.data
+  },
+
+  async approvePost(_, id) {
+    const response = await this.$axios.put(`/v1/posts/${id}/approved`, {
+      approved: true
+    })
+    return response.data.success
+  },
+
+  async pinPost(_, { id, pinned }) {
+    const response = await this.$axios.put(`/v1/posts/${id}/pinned`, {
+      pinned: pinned
+    })
+
+    return response.data.success
+  },
+
+  async deletePost(_, id) {
+    const response = await this.$axios.delete(`/v1/posts/${id}`)
+    return response.data.success
+  },
+
+  async votePost(_, params) {
+    const response = await this.$axios.post(`/v1/posts/${params.post}/votes`, {
+      grade: params.vote
+    })
+
+    return response.data.success
   }
 }

@@ -1,39 +1,160 @@
 <template>
-  <div class="container">
-    <div class="title">{{ title }}</div>
-    <nuxt-link 
-      :to="'/profiles/' + author" 
-      class="author">{{ author }}</nuxt-link>
-    <div class="content">{{ content }}</div>
+  <div class="page-container">
+    <div class="page">
+      <div class="top">
+        <nuxt-link
+          class="back"
+          to="/">
+          <fa :icon="faChevronLeft"/>Back to posts
+        </nuxt-link>
+        <div
+          v-if="admin"
+          class="admin">
+          <button
+            v-if="!post.approved"
+            class="approve-button beefbutton"
+            @click="approve">Approve</button>
+          <button
+            v-if="post.approved && !post.pinned"
+            class="beefbutton"
+            @click="pin">Pin</button>
+          <button
+            v-if="post.approved && post.pinned"
+            class="beefbutton"
+            @click="unpin">Unpin</button>
+          <button
+            class="beefbutton"
+            @click="confirmRemove">
+            <fa :icon="faTrashAlt"/>
+          </button>
+        </div>
+      </div>
+      <post-details :post="post"/>
+    </div>
+    <v-dialog/>
   </div>
 </template>
 <script>
+import PostDetails from '~/components/PostDetails'
+import { faChevronLeft, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
+
 export default {
-  async asyncData({ store, params, error }) {
-    console.log(params.id)
+  components: {
+    PostDetails
+  },
+  async asyncData({ store, params, error, router, $axios }) {
     try {
-      return await store.dispatch('getPost', params.id)
+      const post = await store.dispatch('getPost', params.id)
+      const admin = store.state.auth && store.state.auth.admin
+
+      return {
+        id: params.id,
+        api: store.state.API_URL,
+        admin: admin,
+        post: post
+      }
     } catch (e) {
       console.log(e)
       error({ statusCode: 404, message: 'Post not found' })
     }
   },
+
+  head() {
+    let title = this.post.title
+    if (title.length > 20) {
+      title = title.substring(0, 20) + '...'
+    }
+
+    return {
+      title: `${title} - Beefboard`
+    }
+  },
+
   validate({ redirect, params, $axios }) {
     if (!params.id) {
       return redirect('/')
     }
     return true
+  },
+  computed: {
+    faChevronLeft() {
+      return faChevronLeft
+    },
+    faTrashAlt() {
+      return faTrashAlt
+    }
+  },
+  methods: {
+    async approve() {
+      try {
+        await this.$store.dispatch('approvePost', this.id)
+        this.post.approved = true
+      } catch (e) {}
+    },
+    async pin() {
+      try {
+        await this.$store.dispatch('pinPost', {
+          id: this.id,
+          pinned: true
+        })
+        this.post.pinned = true
+      } catch (_) {}
+    },
+    async unpin() {
+      try {
+        await this.$store.dispatch('pinPost', {
+          id: this.id,
+          pinned: false
+        })
+        this.post.pinned = false
+      } catch (_) {}
+    },
+    async remove() {
+      try {
+        await this.$store.dispatch('deletePost', this.id)
+        this.$router.push('/')
+      } catch (_) {}
+    },
+    async confirmRemove() {
+      this.$modal.show('dialog', {
+        title: 'Delete post',
+        text: 'Are you sure you want to delete this post?',
+        buttons: [
+          {
+            title: 'Confirm',
+            handler: this.remove
+          },
+          {
+            title: 'Cancel'
+          }
+        ]
+      })
+    }
   }
 }
 </script>
 
 <style scoped>
-.container {
-  height: 100%;
+.page {
   display: flex;
-  align-content: center;
-  align-items: center;
-  text-align: start;
   flex-direction: column;
+  flex: 1;
+}
+
+.top {
+  margin: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+a {
+  display: flex;
+  align-items: center;
+  color: black;
+  text-decoration: none;
+}
+
+button {
+  font-size: 1rem;
 }
 </style>

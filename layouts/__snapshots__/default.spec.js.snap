@@ -2,13 +2,47 @@
 
 exports[`layout renders properly 1`] = `
 <div class="main-container">
-  <div class="top-bar">
-    <div class="logo"><a to="/">Beefboard</a></div>
-    <div class="links"><a to="/login">Login</a> <a to="/register">Register</a>
+  <!---->
+  <div class="menu menu-closed">
+    <div class="menu-main-links"><a to="/" exact="">
+        Home
+      </a> <a to="/posts/" exact="">
+        Browse
+      </a>
+      <!---->
+    </div>
+    <div class="menu-profile-links"><a to="/login">Login</a> <a to="/register">Register</a>
       <!---->
       <!---->
     </div>
   </div>
+  <div class="top-bar">
+    <div class="menu-button">
+      <div icon="[object Object]" style="font-size: 2rem;"></div>
+    </div> <a to="/">
+      <div class="logo">
+        <div class="img-wrapper"><img src="/img/meat.jpg"></div>
+        <div class="logo-text">
+          <div>Beefboard</div>
+          <div class="sub-heading">Your local beef</div>
+        </div>
+      </div>
+    </a>
+    <div class="links">
+      <div class="main-link"><a to="/" exact="">
+          Home
+        </a> <a to="/posts/" exact="">
+          Browse
+        </a>
+        <!---->
+      </div>
+      <div class="profile-links"><a to="/login">Login</a> <a to="/register">Register</a>
+        <!---->
+        <!---->
+      </div>
+    </div>
+  </div>
+  <div class="top-bar-spacer"></div>
   <div></div>
 </div>
 `;

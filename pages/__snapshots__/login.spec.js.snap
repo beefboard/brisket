@@ -1,13 +1,16 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`login renders properly 1`] = `
-<div class="container">
-  <form method="post" class="login">
-    <div><input type="text" placeholder="Username"> <input type="password" placeholder="Password">
-      <!---->
-    </div> <button disabled="disabled" type="submit">
-      Login
-    </button>
-  </form>
+<div class="page-container">
+  <div class="form-container">
+    <form method="post" class="login">
+      <div class="title">Beefboard</div>
+      <div class="inputs"><input type="text" placeholder="Username"> <input type="password" placeholder="Password">
+        <div class="error"></div>
+      </div> <button disabled="disabled" type="submit" class="beefbutton login-button">
+        Login
+      </button>
+    </form>
+  </div>
 </div>
 `;

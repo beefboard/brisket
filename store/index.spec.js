@@ -89,7 +89,7 @@ describe('store', () => {
 
         await mockStore.dispatch('refreshAuth')
 
-        expect(axios.get).toHaveBeenCalledWith('/me', { progress: false })
+        expect(axios.get).toHaveBeenCalledWith('/v1/me', { progress: false })
       })
 
       it('should save auth details in state', async () => {
@@ -107,7 +107,7 @@ describe('store', () => {
         axios.delete.mockResolvedValue({ data: { success: true } })
         await mockStore.dispatch('logout')
 
-        expect(axios.delete).toHaveBeenCalledWith('/me')
+        expect(axios.delete).toHaveBeenCalledWith('/v1/me')
         expect(mockCookiesStore['AUTH_TOKEN']).toBe(null)
         expect(mockStore.state.auth).toBe(null)
         expect(mockStore.state.token).toBe(null)
@@ -130,7 +130,7 @@ describe('store', () => {
           password: 'test'
         }
         await mockStore.dispatch('register', details)
-        expect(axios.post).toHaveBeenCalledWith('/accounts', details)
+        expect(axios.post).toHaveBeenCalledWith('/v1/accounts', details)
       })
     })
 
@@ -145,12 +145,12 @@ describe('store', () => {
         const details = await mockStore.dispatch('getUser', 'test')
 
         expect(details).toBe(mockDetails)
-        expect(axios.get).toHaveBeenCalledWith('/accounts/test')
+        expect(axios.get).toHaveBeenCalledWith('/v1/accounts/test')
 
         axios.get.mockReset()
         axios.get.mockResolvedValue({ data: mockDetails })
         await mockStore.dispatch('getUser', 'test1')
-        expect(axios.get).toHaveBeenCalledWith('/accounts/test1')
+        expect(axios.get).toHaveBeenCalledWith('/v1/accounts/test1')
       })
     })
 
@@ -171,7 +171,7 @@ describe('store', () => {
         const filter = { approved: true }
 
         const posts = await mockStore.dispatch('getPosts', filter)
-        expect(axios.get).toHaveBeenCalledWith('/posts', { params: filter })
+        expect(axios.get).toHaveBeenCalledWith('/v1/posts', { params: filter })
         expect(posts).toBe(mockPosts)
       })
     })
@@ -188,7 +188,75 @@ describe('store', () => {
 
         const post = await mockStore.dispatch('getPost', 'test')
         expect(post).toBe(mockPost)
-        expect(axios.get).toHaveBeenCalledWith('/posts/test')
+        expect(axios.get).toHaveBeenCalledWith('/v1/posts/test')
+      })
+    })
+
+    describe('approvePost', () => {
+      it('should set approval to true on the given post id', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        const success = await mockStore.dispatch('approvePost', 'test')
+        expect(axios.put).toHaveBeenCalledWith('/v1/posts/test/approved', {
+          approved: true
+        })
+      })
+
+      it('should return success value from response', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        const success = await mockStore.dispatch('approvePost', 'test')
+        expect(success).toBe(true)
+      })
+    })
+
+    describe('pinPost', () => {
+      it('should set pinned to the given value for the given post', async () => {
+        axios.put.mockResolvedValue({
+          data: { success: true }
+        })
+
+        await mockStore.dispatch('pinPost', {
+          id: 'test',
+          pinned: true
+        })
+        expect(axios.put).toHaveBeenCalledWith('/v1/posts/test/pinned', {
+          pinned: true
+        })
+      })
+    })
+
+    describe('deletePost', () => {
+      it('should delete the given post from the posts api', async () => {
+        axios.delete.mockResolvedValue({
+          data: { success: true }
+        })
+
+        await mockStore.dispatch('deletePost', 'test')
+        expect(axios.delete).toHaveBeenCalledWith('/v1/posts/test')
+      })
+    })
+
+    describe('votePost', () => {
+      it('should send vote with our current user', async () => {
+        axios.post.mockResolvedValue({
+          data: {
+            success: true
+          }
+        })
+
+        await mockStore.dispatch('votePost', {
+          post: 'asdfdf',
+          vote: -1
+        })
+
+        expect(axios.post).toHaveBeenCalledWith('/v1/posts/asdfdf/votes', {
+          grade: -1
+        })
       })
     })
   })

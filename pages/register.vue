@@ -1,38 +1,48 @@
 <template>
-  <div class="container">
-    <div class="error" v-if="errorMessage">{{ errorMessage }}</div>
-    <form @submit.prevent="register">
-      <input
-        v-model="username"
-        :class="{ bad: invalidUser || usernameTaken }"
-        type="text"
-        placeholder="Username"
-        @keyup="checkUsername">
-      <input
-        v-model="password"
-        :class="{ bad: badPasswords }"
-        type="password"
-        placeholder="Password">
-      <input
-        v-model="password2"
-        :class="{ bad: badPasswords }"
-        type="password"
-        placeholder="Retype password">
-      <input
-        v-model="email"
-        :class="{ bad: invalidEmail }"
-        type="text"
-        placeholder="Email">
-      <input
-        v-model="firstName"
-        type="text"
-        placeholder="First name">
-      <input
-        v-model="lastName"
-        type="text"
-        placeholder="Last name">
-      <button :disabled="!validForm || loading">Register</button>
-    </form>
+  <div class="page-container">
+    <div class="form-container">
+      <form @submit.prevent="register">
+        <input
+          v-model="username"
+          :class="{ bad: invalidUser || usernameTaken }"
+          type="text"
+          placeholder="Username"
+          @keyup="checkUsername">
+        <div class="password-input">
+          <input
+            v-model="password"
+            :class="{ bad: badPasswords }"
+            type="password"
+            placeholder="Password">
+          <input
+            v-model="password2"
+            :class="{ bad: badPasswords }"
+            type="password"
+            placeholder="Retype password">
+        </div>
+        <input
+          v-model="email"
+          :class="{ bad: invalidEmail }"
+          type="text"
+          placeholder="Email">
+        <div class="name-input">
+          <input
+            v-model="firstName"
+            type="text"
+            placeholder="First name">
+          <input
+            v-model="lastName"
+            type="text"
+            placeholder="Last name">
+        </div>
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
+        <button
+          :disabled="!validForm || loading"
+          class="beefbutton register-button">Register</button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -51,7 +61,13 @@ export default {
       timeout: null,
       validUser: true,
       usernameTaken: false,
-      errorMessage: null
+      response: null
+    }
+  },
+
+  head() {
+    return {
+      title: 'Register - Beefboard'
     }
   },
 
@@ -87,6 +103,31 @@ export default {
 
     invalidUser() {
       return this.username && this.username.indexOf(' ') > -1
+    },
+
+    errorMessage() {
+      if (this.response) {
+        return this.response
+      }
+
+      let messages = []
+      if (this.badPasswords) {
+        messages.push('Passwords do not match')
+      }
+
+      if (this.invalidEmail) {
+        messages.push('Email is not valid')
+      }
+
+      if (this.invalidUser) {
+        messages.push('Invalid user')
+      }
+
+      if (this.usernameTaken) {
+        messages.push('Username already exists')
+      }
+
+      return messages.join(', ')
     }
   },
 
@@ -97,7 +138,7 @@ export default {
       }
 
       this.loading = true
-      this.errorMessage = null
+      this.response = null
       try {
         // register the account, and then login
         await this.$store.dispatch('register', {
@@ -116,12 +157,12 @@ export default {
         this.loading = false
         if (e.response && e.response.status) {
           if (e.response.status == 500) {
-            this.errorMessage = 'Server error'
+            this.response = 'Server error'
           } else {
-            this.errorMessage = 'Unknown error'
+            this.response = 'Unknown error'
           }
         } else {
-          this.errorMessage = 'Connection error'
+          this.response = 'Connection error'
         }
       }
     },
@@ -159,16 +200,56 @@ export default {
 </script>
 
 <style scoped>
-.container {
-  height: 100%;
+.page-container {
+  margin: 1rem;
+}
+
+.form-container {
   display: flex;
+  flex: 1;
   justify-content: center;
-  align-items: center;
-  text-align: center;
 }
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 input {
-  animation: linear 0.3s ease-in-out;
+  transition: all 0.3s ease-in-out;
+  width: 20rem;
+  border-style: solid;
+  border-color: #f1f1f1;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.6rem;
+  background-color: #f1f1f1;
+  border-radius: 0.5rem;
+  margin: 0.5rem;
 }
+
+input:focus {
+  outline: none;
+}
+
+.password-input {
+  margin-bottom: 2rem;
+}
+
+.name-input {
+  margin-bottom: 2rem;
+}
+
+.register-button {
+  width: 5rem;
+}
+
+.error-message {
+  height: 1rem;
+  color: red;
+  margin-bottom: 1rem;
+}
+
 .bad {
   border-color: red;
 }

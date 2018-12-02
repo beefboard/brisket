@@ -268,7 +268,7 @@ describe('login', () => {
     await flushPromises()
 
     expect(wrapper.vm.$router.push).not.toHaveBeenCalled()
-    expect(wrapper.find('.error').html()).toContain('Server error')
+    expect(wrapper.find('.error-message').text()).toBe('Server error')
 
     mockError = {
       response: {
@@ -277,11 +277,11 @@ describe('login', () => {
     }
     form.trigger('submit')
     await flushPromises()
-    expect(wrapper.find('.error').html()).toContain('Unknown error')
+    expect(wrapper.find('.error-message').text()).toBe('Unknown error')
 
     mockError = new Error('Random error')
     form.trigger('submit')
     await flushPromises()
-    expect(wrapper.find('.error').html()).toContain('Connection error')
+    expect(wrapper.find('.error-message').text()).toBe('Connection error')
   })
 })

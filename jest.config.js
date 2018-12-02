@@ -5,6 +5,7 @@ module.exports = {
     '^~/(.*)$': '<rootDir>/$1',
     '^~~/(.*)$': '<rootDir>/$1'
   },
+  testPathIgnorePatterns: ['acceptence.spec.js'],
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
@@ -13,11 +14,11 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     '<rootDir>/components/**/*.vue',
-    '<rootDir>/pages/*.vue',
+    '<rootDir>/pages/**/*.vue',
     '<rootDir>/layouts/*.vue',
     '<rootDir>/store/*.js',
     '<rootDir>/middleware/*.js',
-    '<rootDir>/plugins/*.js'
+    '<rootDir>/plugins/axiosTokenInjector.js'
   ],
   verbose: true
 }

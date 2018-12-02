@@ -11,9 +11,30 @@ module.exports = {
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { hid: 'description', name: 'description', content: pkg.description }
+      { hid: 'description', name: 'description', content: pkg.description },
+      { name: 'msapplication-TileColor', content: '#b91d47' }
     ],
-    link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }]
+    link: [
+      {
+        rel: 'apple-touch-icon',
+        sizes: '180x180',
+        href: '/apple-touch-icon.png'
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '32x32',
+        href: '/favicon-32x32.png'
+      },
+      {
+        rel: 'icon',
+        type: 'image/png',
+        sizes: '16x16',
+        href: '/favicon-16x16.png'
+      },
+      { rel: 'manifest', href: '/site.webmanifest' },
+      { rel: 'mask-icon', href: '/safari-pinned-tab.svg', color: '#ff0000' }
+    ]
   },
 
   /*
@@ -29,7 +50,13 @@ module.exports = {
   /*
   ** Plugins to load before mounting the App
   */
-  plugins: ['~/plugins/axiosTokenInjector'],
+  plugins: [
+    '~/plugins/axios',
+    '~/plugins/vue-moment',
+    '~/plugins/textarea',
+    '~plugins/modal',
+    { src: '~/plugins/gallery.js', ssr: false }
+  ],
 
   /*
   ** Nuxt.js modules
@@ -37,14 +64,18 @@ module.exports = {
   modules: [
     // Doc: https://github.com/nuxt-community/axios-module#usage
     '@nuxtjs/axios',
-    'cookie-universal-nuxt'
+    'cookie-universal-nuxt',
+    'nuxt-fontawesome'
   ],
-  /*
-  ** Axios module configuration
-  */
-  axios: {
-    baseURL: process.env.API_URL || 'https://api.beefboard.mooo.com/v1/',
-    timeout: 1000
+
+  fontawesome: {
+    imports: [
+      {
+        set: '@fortawesome/free-solid-svg-icons',
+        icons: ['fas']
+      }
+    ],
+    component: 'fa'
   },
 
   /**
