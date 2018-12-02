@@ -61,8 +61,8 @@ describe('plugins/axios', () => {
     expect(mockConfig.baseURL).toBe(mockStore.state.API_URL)
   })
 
-  it('should add timeout 1000 to defaults', () => {
+  it('should add timeout 3000 to defaults', () => {
     axios({ $axios: mockAxios, store: mockStore })
-    expect(mockAxios.defaults.timeout).toBe(1000)
+    expect(mockAxios.defaults.timeout).toBe(3000)
   })
 })

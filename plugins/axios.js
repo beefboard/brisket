@@ -4,7 +4,7 @@
  * axios
  */
 export default function({ $axios, store }) {
-  $axios.defaults.timeout = 1000
+  $axios.defaults.timeout = 3000
 
   $axios.onRequest(config => {
     config.baseURL = store.state.API_URL

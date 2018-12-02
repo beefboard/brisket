@@ -52,6 +52,13 @@ export default {
       search: 'new'
     }
   },
+
+  head() {
+    return {
+      title: `Browse - Beefboard`
+    }
+  },
+
   async asyncData({ route, error, store }) {
     try {
       const query = route.query
@@ -82,7 +89,7 @@ export default {
         search: search
       }
     } catch (e) {
-      // console.log(e)
+      console.log(e)
       error('Error loading posts')
     }
   },
