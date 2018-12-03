@@ -5,9 +5,9 @@ exports[`profiles/_id renders properly 1`] = `
   <div class="profile-container">
     <div>
       <div class="username">
-
+        test
       </div>
-      <div class="name"> </div>
+      <div class="name">lel lol</div>
     </div>
   </div>
 </div>

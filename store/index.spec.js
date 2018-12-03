@@ -30,6 +30,7 @@ describe('store', () => {
   describe('actions', () => {
     // Resest the mocks
     beforeEach(() => {
+      jest.resetModules()
       mockCookiesStore = {}
       mockStore = new Vuex.Store({
         state: store.state(),
@@ -66,6 +67,20 @@ describe('store', () => {
 
         await store.actions.nuxtServerInit(mockStore, mockContext)
         expect(mockStore.state.token).toBe(null)
+      })
+
+      it('should store API_URL from process env', async () => {
+        process.env.API_URL = 'test.test'
+        await store.actions.nuxtServerInit(mockStore, mockContext)
+        expect(mockStore.state.API_URL).toBe('test.test')
+      })
+
+      it('should store API_URL as "https://api.test.beefboard.mooo.com" when not set in env', async () => {
+        delete process.env.API_URL
+        await store.actions.nuxtServerInit(mockStore, mockContext)
+        expect(mockStore.state.API_URL).toBe(
+          'https://api.test.beefboard.mooo.com'
+        )
       })
     })
 

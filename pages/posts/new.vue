@@ -29,7 +29,7 @@
             type="file"
             class="files"
             multiple
-            @change="handleFilesUpload()">
+            @change="handleAttachFiles()">
           <button
             class="beefbutton upload-button"
             @click="uploadFile">Attach photo(s)</button>
@@ -96,7 +96,7 @@ export default {
       this.$refs.files.click()
     },
 
-    handleFilesUpload() {
+    handleAttachFiles() {
       const files = this.$refs.files.files
       for (const file of files) {
         this.images.push(URL.createObjectURL(file))

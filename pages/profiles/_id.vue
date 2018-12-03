@@ -12,22 +12,22 @@
 </template>
 <script>
 export default {
-  data() {
-    return {
-      username: '',
-      firstName: '',
-      lastName: ''
-    }
-  },
   async asyncData({ params, store, error }) {
-    if (store.state.auth && params.id.toLowerCase() == store.state.auth) {
+    if (
+      store.state.auth &&
+      params.id.toLowerCase() == store.state.auth.username
+    ) {
       return store.state.auth
     }
 
     try {
       return await store.dispatch('getUser', params.id)
     } catch (e) {
-      error({ statusCode: 404, message: 'User not found' })
+      if (e.response && e.response.status == 404) {
+        error({ statusCode: 404, message: 'User not found' })
+      } else {
+        error({ statusCode: 500, message: 'Unknown error' })
+      }
     }
   },
 
