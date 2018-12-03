@@ -23,7 +23,7 @@ describe('PostDetails', () => {
         id: 'asdfasdf',
         content: 'sadfasdfsadf sdsdsdg',
         author: 'test',
-        date: new Date(2017, 11, 28).toString(),
+        date: new Date(2017, 11, 28).toISOString(),
         approved: false,
         pinned: false,
         votes: { grade: 1 }
@@ -69,7 +69,7 @@ describe('PostDetails', () => {
       id: 'asdfasdf',
       content: 'sadfasdfsadf sdsdsdg',
       author: 'slfkgjsdklfg',
-      date: new Date(2017, 11, 28).toString(),
+      date: new Date(2017, 11, 28).toISOString(),
       approved: false,
       pinned: false,
       votes: { grade: 1 }
@@ -86,7 +86,7 @@ describe('PostDetails', () => {
       id: 'asdfasdf',
       content: 'sadfasdfsadf sdsdsdg',
       author: 'slfkgjsdklfg',
-      date: new Date(2017, 11, 28).toString(),
+      date: new Date(2017, 11, 28).toISOString(),
       approved: false,
       pinned: false,
       votes: { grade: 1 }
@@ -101,7 +101,7 @@ describe('PostDetails', () => {
       id: 'asdfasdf',
       content: 'sadfasdfsadf sdsdsdg',
       author: 'slfkgjsdklfg',
-      date: new Date(2017, 11, 28).toString(),
+      date: new Date(2017, 11, 28).toISOString(),
       approved: false,
       pinned: false,
       votes: { grade: 1 }
@@ -116,7 +116,7 @@ describe('PostDetails', () => {
       id: 'asdfasdf',
       content: 'sadfasdfsadf sdsdsdg',
       author: 'slfkgjsdklfg',
-      date: new Date(2017, 11, 28).toString(),
+      date: new Date(2017, 11, 28).toISOString(),
       approved: false,
       pinned: false,
       numImages: 2,

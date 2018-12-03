@@ -74,13 +74,12 @@ export default {
         await this.$router.push('/')
       } catch (e) {
         this.loading = false
-        if (e.response) {
-          if (e.response.status == 401) {
-            this.errorMessage = 'Invalid username or password'
-            this.password = ''
-          } else if (e.response.status == 500) {
-            this.errorMessage = 'Server error'
-          }
+
+        if (e.response && e.response.status == 401) {
+          this.errorMessage = 'Invalid username or password'
+          this.password = ''
+        } else if (e.response && e.response.status == 500) {
+          this.errorMessage = 'Server error'
         } else {
           this.errorMessage = 'Unknown error'
         }

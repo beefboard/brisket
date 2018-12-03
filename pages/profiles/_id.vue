@@ -12,7 +12,14 @@
 </template>
 <script>
 export default {
-  async asyncData({ params, $axios, store, error }) {
+  data() {
+    return {
+      username: '',
+      firstName: '',
+      lastName: ''
+    }
+  },
+  async asyncData({ params, store, error }) {
     if (store.state.auth && params.id.toLowerCase() == store.state.auth) {
       return store.state.auth
     }

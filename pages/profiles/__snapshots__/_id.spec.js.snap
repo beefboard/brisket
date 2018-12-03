@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`profiles/_id renders properly 1`] = `
+<div class="page-container">
+  <div class="profile-container">
+    <div>
+      <div class="username">
+
+      </div>
+      <div class="name"> </div>
+    </div>
+  </div>
+</div>
+`;
