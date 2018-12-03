@@ -114,6 +114,8 @@ export default {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: start;
   flex: 1;
   margin-left: 8rem;
   margin-right: 1rem;
