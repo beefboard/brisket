@@ -98,6 +98,23 @@ export const actions = {
     return response.data
   },
 
+  async newPost(_, data) {
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('content', data.content)
+
+    for (const image of data.images) {
+      formData.append('images', image)
+    }
+
+    const response = await this.$axios.post(`/v1/posts`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data.id
+  },
+
   async approvePost(_, id) {
     const response = await this.$axios.put(`/v1/posts/${id}/approved`, {
       approved: true

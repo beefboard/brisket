@@ -54,7 +54,6 @@ export default {
         post: post
       }
     } catch (e) {
-      console.log(e)
       error({ statusCode: 404, message: 'Post not found' })
     }
   },
@@ -91,6 +90,7 @@ export default {
         this.post.approved = true
       } catch (e) {}
     },
+
     async pin() {
       try {
         await this.$store.dispatch('pinPost', {
@@ -100,6 +100,7 @@ export default {
         this.post.pinned = true
       } catch (_) {}
     },
+
     async unpin() {
       try {
         await this.$store.dispatch('pinPost', {
@@ -109,12 +110,14 @@ export default {
         this.post.pinned = false
       } catch (_) {}
     },
+
     async remove() {
       try {
         await this.$store.dispatch('deletePost', this.id)
         this.$router.push('/')
       } catch (_) {}
     },
+
     async confirmRemove() {
       this.$modal.show('dialog', {
         title: 'Delete post',

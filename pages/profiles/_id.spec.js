@@ -27,7 +27,7 @@ describe('profiles/_id', () => {
       }
     })
   }
-  it('renders properly', () => {
+  it('mounts properly', () => {
     const wrapper = renderLayout()
     expect(wrapper.isVueInstance()).toBeTruthy()
   })

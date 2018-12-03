@@ -1,7 +1,12 @@
 import VueTestUtils from '@vue/test-utils'
 import { shallowMount } from '@vue/test-utils'
-import index from './_id.vue'
+import _id from './_id.vue'
 
 describe('posts/_id.vue', () => {
-  it('renders properly', () => {})
+  function renderLayout() {
+    return shallowMount(_id, {})
+  }
+  it('mounts properly', () => {
+    const wrapper = renderLayout()
+  })
 })
