@@ -5,7 +5,7 @@ import newPostPage from './new.vue'
 
 VueTestUtils.config.stubs['gallery'] = '<div></div>'
 VueTestUtils.config.stubs['textarea-autosize'] = '<input>'
-VueTestUtils.config.stubs['v-modal'] = '<div></div>'
+VueTestUtils.config.stubs['v-dialog'] = '<div></div>'
 
 describe('posts/new.vue', () => {
   let mockStore
@@ -26,7 +26,7 @@ describe('posts/new.vue', () => {
 
     return shallowMount(newPostPage, {
       mocks: {
-        store: mockStore,
+        $store: mockStore,
         $router: mockRouter,
         $modal: mockModal
       }
@@ -54,7 +54,7 @@ describe('posts/new.vue', () => {
     expect(head.title).toBe('New post - Beefboard')
   })
 
-  it('should call api with new post data and disable submit button while loading when submit pressed', async () => {
+  test('submit should call api with new post data and disable submit button while loading', async () => {
     const wrapper = renderLayout()
 
     wrapper.find('.title').setValue('A title')
@@ -73,11 +73,9 @@ describe('posts/new.vue', () => {
       content: 'Some huge content',
       images: []
     })
-
-    expect(wrapper.find('.submit-button').attributes('disabled')).toBeFalsy()
   })
 
-  it('should navigate to posts page after submission', async () => {
+  it('should navigate to posts page after submission and not enabled submit button', async () => {
     const wrapper = renderLayout()
 
     wrapper.find('.title').setValue('A title')
@@ -91,9 +89,11 @@ describe('posts/new.vue', () => {
 
     await flushPromises()
     expect(mockRouter.push).toHaveBeenCalledWith('/posts/skgfjsjgsfghfdh')
+
+    expect(wrapper.find('.submit-button').attributes('disabled')).toBeTruthy()
   })
 
-  it('should show failure modal on error', async () => {
+  it('should show failure modal on error and re-enabled submit button', async () => {
     const wrapper = renderLayout()
 
     wrapper.find('.title').setValue('A title')
@@ -108,6 +108,7 @@ describe('posts/new.vue', () => {
     await flushPromises()
 
     expect(mockModal.show).toHaveBeenCalled()
+    expect(wrapper.find('.submit-button').attributes('disabled')).toBeFalsy()
   })
 
   it('should disable submit button when title and content not filled', async () => {
@@ -120,7 +121,7 @@ describe('posts/new.vue', () => {
     expect(wrapper.find('.submit-button').attributes('disabled')).toBeFalsy()
   })
 
-  test('Attach button should open attach photos', async () => {
+  test('attach button should open attach photos', async () => {
     const wrapper = renderLayout()
     wrapper.vm.$refs.files.click = jest.fn()
 
@@ -129,6 +130,7 @@ describe('posts/new.vue', () => {
 
     expect(wrapper.vm.$refs.files.click).toHaveBeenCalled()
   })
+
   it('should display images which are attached', async () => {
     const wrapper = renderLayout()
 

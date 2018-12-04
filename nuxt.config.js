@@ -54,7 +54,7 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/vue-moment',
     '~/plugins/textarea',
-    '~plugins/modal',
+    '~/plugins/modal',
     { src: '~/plugins/gallery.js', ssr: false },
     { src: '~/plugins/flickity.js', ssr: false }
   ],
