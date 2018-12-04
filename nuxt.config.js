@@ -55,7 +55,8 @@ module.exports = {
     '~/plugins/vue-moment',
     '~/plugins/textarea',
     '~plugins/modal',
-    { src: '~/plugins/gallery.js', ssr: false }
+    { src: '~/plugins/gallery.js', ssr: false },
+    { src: '~/plugins/flickity.js', ssr: false }
   ],
 
   /*

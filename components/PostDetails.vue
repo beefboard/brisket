@@ -13,17 +13,28 @@
       <div
         v-if="images.length > 0"
         class="images">
-        <gallery
-          :images="images"
-          :index="index"
-          @close="index = null"/>
-        <div
-          v-for="(image, imageIndex) in images"
-          :key="imageIndex"
-          :style="{ backgroundImage: 'url(' + image + ')', width: '300px', height: '200px' }"
-          class="image"
-          @click="index = imageIndex"
-        />
+        <no-ssr>
+          <gallery 
+            :images="images" 
+            :index="index" 
+            class="gallery" 
+            @close="closeImage"/>
+          <flickity 
+            ref="flickity" 
+            :options="flickityOptions" 
+            class="carousel">
+            <div 
+              v-for="(image, imageIndex) in images"
+              :key="imageIndex"
+              class="carousel-cell">
+              <img
+                :src="image"
+                class="carousel-cell-image"
+                @click="openImage(imageIndex)"
+              >
+            </div>
+          </flickity>
+        </no-ssr>
       </div>
     </div>
     <div class="title">{{ post.title }}</div>
@@ -57,7 +68,22 @@ export default {
 
     return {
       images: images,
-      index: null
+      index: null,
+      flickityOptions: {
+        initialIndex: 0,
+        prevNextButtons: true,
+        wrapAround: true,
+        autoPlay: true,
+        draggable: false
+      }
+    }
+  },
+  methods: {
+    openImage(index) {
+      this.index = index
+    },
+    closeImage() {
+      this.index = null
     }
   }
 }
@@ -97,6 +123,26 @@ export default {
 
 .content > div {
   margin: 1rem;
+}
+
+.carousel {
+  flex: 1;
+  max-width: 30rem;
+  height: 15rem;
+  margin-bottom: 2rem;
+  overflow: hidden;
+}
+.carousel-cell {
+  width: 66%;
+  height: 15rem;
+  margin-right: 10px;
+}
+
+.carousel-cell-image {
+  display: block;
+  max-height: 100%;
+  margin: 0 auto;
+  max-width: 100%;
 }
 
 @media screen and (max-width: 600px) {
