@@ -33,6 +33,11 @@ acceptence:
   image: buildkite/puppeteer
   script:
     - npm run build
+    - if [[ "$CI_COMMIT_REF_NAME" == "development" ]]; then
+        export API_URL="https://api.test.beefboard.mooo.com";
+      else
+        export API_URL="https://api.beefboard.mooo.com";
+      fi
     - npm run acceptence
 
 build:
