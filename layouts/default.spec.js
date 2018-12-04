@@ -9,6 +9,7 @@ VueTestUtils.config.stubs['fa'] = '<div><slot /></div>'
 
 describe('layout', () => {
   let mockAuth
+  let mockRouter
 
   function renderLayout() {
     return shallowMount(defaultLayout, {
@@ -147,5 +148,47 @@ describe('layout', () => {
     await flushPromises()
 
     expect(wrapper.vm.$router.push).toHaveBeenCalledWith('/')
+  })
+
+  test('layout adds beforeEach hook to router', async () => {
+    const wrapper = renderLayout()
+    expect(wrapper.vm.$router.beforeEach).toHaveBeenCalledWith(
+      expect.any(Function)
+    )
+  })
+
+  test('menu button opens menu', async () => {
+    const wrapper = renderLayout()
+
+    expect(wrapper.find('.menu').classes()).toContain('menu-closed')
+
+    wrapper.find('.menu-button').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('.menu').classes()).not.toContain('menu-closed')
+  })
+
+  test('clicking outside of menu closes menu', async () => {
+    const wrapper = renderLayout()
+    wrapper.vm.menuOpen = true
+
+    wrapper.find('.menu-closer').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('.menu').classes()).toContain('menu-closed')
+  })
+
+  test('beforeEach hook on router closes menu and calls next', async () => {
+    const wrapper = renderLayout()
+
+    wrapper.vm.menuOpen = true
+
+    const navHook = wrapper.vm.$router.beforeEach.mock.calls[0][0]
+
+    const next = jest.fn()
+    navHook(null, null, next)
+
+    expect(next).toHaveBeenCalled()
+    expect(wrapper.vm.menuOpen).toBe(false)
   })
 })

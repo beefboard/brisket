@@ -2,6 +2,8 @@ import { shallowMount } from '@vue/test-utils'
 import register from './register'
 import flushPromises from 'flush-promises'
 
+jest.useFakeTimers()
+
 describe('login', () => {
   let mockDispatchResponse
   const mockStore = {
@@ -26,7 +28,36 @@ describe('login', () => {
     expect(wrapper.html()).toMatchSnapshot()
   })
 
-  it('should contain login button', () => {
+  it('should set page title to "Register - Beefboard"', () => {
+    const wrapper = shallowMount(register)
+
+    const head = wrapper.vm.$options.head()
+    expect(head.title).toBe('Register - Beefboard')
+  })
+
+  it('should only redirect to home if logged in', () => {
+    const redirect = jest.fn()
+    const mockStore = {
+      state: {
+        auth: {
+          username: 'sgfsdfg'
+        }
+      }
+    }
+
+    const wrapper = shallowMount(register)
+
+    let result = wrapper.vm.$options.validate({ store: mockStore, redirect })
+    expect(redirect).toHaveBeenCalledWith('/')
+    expect(result).toBe(false)
+
+    mockStore.state.auth = null
+
+    result = wrapper.vm.$options.validate({ store: mockStore, redirect })
+    expect(result).toBe(true)
+  })
+
+  it('should contain register button', () => {
     const wrapper = shallowMount(register)
     expect(wrapper.find('button')).toBeTruthy()
   })
@@ -54,6 +85,28 @@ describe('login', () => {
     expect(usernameInput.classes()).not.toContain('bad')
   })
 
+  it('should not check empty usernames', async () => {
+    mockDispatchResponse = async () => {
+      return { username: 'takenusername1' }
+    }
+
+    const wrapper = shallowMount(register, {
+      mocks: {
+        $store: mockStore
+      }
+    })
+    const form = wrapper.find('form')
+    const usernameInput = form.find('[placeholder="Username"]')
+    usernameInput.setValue('')
+    // backspace
+    usernameInput.trigger('keyup', { keyCode: 20 })
+
+    jest.runAllTimers()
+
+    await flushPromises()
+    expect(usernameInput.classes()).not.toContain('bad')
+  })
+
   it('should highlight already existing usernames', async () => {
     mockDispatchResponse = async () => {
       return { username: 'takenusername1' }
@@ -70,12 +123,9 @@ describe('login', () => {
     usernameInput.setValue('takenusername')
     usernameInput.trigger('keyup', { key: 1 })
 
-    // Wait a second for the check to be triggered
-    await new Promise(resolve => {
-      setTimeout(resolve, 100)
-    })
-    await flushPromises()
+    jest.runAllTimers()
 
+    await flushPromises()
     expect(usernameInput.classes()).toContain('bad')
 
     mockDispatchResponse = async () => {
@@ -89,13 +139,124 @@ describe('login', () => {
     usernameInput.setValue('usernamenottaken')
     usernameInput.trigger('keyup', { key: 1 })
 
-    // Wait a second for the check to be triggered
-    await new Promise(resolve => {
-      setTimeout(resolve, 100)
+    jest.runAllTimers()
+    await flushPromises()
+    expect(usernameInput.classes()).not.toContain('bad')
+  })
+
+  it('should ignore usernamecheck errors', async () => {
+    mockDispatchResponse = async () => {
+      throw {
+        response: {
+          status: 500
+        }
+      }
+    }
+
+    const wrapper = shallowMount(register, {
+      mocks: {
+        $store: mockStore
+      }
     })
+
+    const form = wrapper.find('form')
+    const usernameInput = form.find('[placeholder="Username"]')
+
+    usernameInput.setValue('usernametaken')
+    usernameInput.trigger('keyup', { key: 1 })
+
+    jest.runAllTimers()
+    await flushPromises()
+    expect(usernameInput.classes()).not.toContain('bad')
+  })
+
+  it('should not perform usercheck if username input has changed', async () => {
+    mockDispatchResponse = async () => {
+      return { username: 'takenusername1' }
+    }
+
+    const wrapper = shallowMount(register, {
+      mocks: {
+        $store: mockStore
+      }
+    })
+    const form = wrapper.find('form')
+    const usernameInput = form.find('[placeholder="Username"]')
+
+    usernameInput.setValue('takenusername')
+    usernameInput.trigger('keyup', { key: 1 })
+    usernameInput.setValue('takenusernamelel')
+
+    jest.runAllTimers()
     await flushPromises()
 
     expect(usernameInput.classes()).not.toContain('bad')
+
+    mockDispatchResponse = async () => {
+      throw {
+        response: {
+          status: 404
+        }
+      }
+    }
+
+    wrapper.vm.usernameTaken = true
+
+    usernameInput.setValue('usernamenottaken')
+    usernameInput.trigger('keyup', { key: 1 })
+    usernameInput.setValue('usernamenottaken2')
+
+    jest.runAllTimers()
+    await flushPromises()
+
+    // The username has changed since we started the check, so we still
+    // expect the username to be bad
+    expect(usernameInput.classes()).toContain('bad')
+  })
+
+  it('should ignore usercheck if username input has changed', async () => {
+    mockDispatchResponse = async () => {
+      return { username: 'takenusername1' }
+    }
+
+    const wrapper = shallowMount(register, {
+      mocks: {
+        $store: mockStore
+      }
+    })
+    const form = wrapper.find('form')
+    const usernameInput = form.find('[placeholder="Username"]')
+
+    usernameInput.setValue('takenusername')
+    usernameInput.trigger('keyup', { key: 1 })
+
+    jest.runAllTimers()
+
+    usernameInput.setValue('takenusernamelel')
+    await flushPromises()
+
+    expect(usernameInput.classes()).not.toContain('bad')
+
+    mockDispatchResponse = async () => {
+      throw {
+        response: {
+          status: 404
+        }
+      }
+    }
+
+    wrapper.vm.usernameTaken = true
+
+    usernameInput.setValue('usernamenottaken')
+    usernameInput.trigger('keyup', { key: 1 })
+
+    jest.runAllTimers()
+    usernameInput.setValue('takenusernamelel')
+    await flushPromises()
+
+    // The username has changed since we started the check, so we still
+    // expect the username to be bad
+    expect(usernameInput.classes()).toContain('bad')
   })
 
   it('should highlight invalid emails', async () => {
@@ -149,10 +310,7 @@ describe('login', () => {
     form.find('[placeholder="Username"]').setValue('username')
     form.find('[placeholder="Username"]').trigger('keyup', { key: 1 })
 
-    // Wait a second for the check to be triggered
-    await new Promise(resolve => {
-      setTimeout(resolve, 100)
-    })
+    jest.runAllTimers()
     await flushPromises()
 
     form.find('[placeholder="Password"]').setValue('password')
@@ -193,10 +351,7 @@ describe('login', () => {
     form.find('[placeholder="Username"]').setValue('username')
     form.find('[placeholder="Username"]').trigger('keyup', { key: 1 })
 
-    // Wait a second for the check to be triggered
-    await new Promise(resolve => {
-      setTimeout(resolve, 100)
-    })
+    jest.runAllTimers()
     await flushPromises()
 
     form.find('[placeholder="Password"]').setValue('password')
@@ -232,6 +387,7 @@ describe('login', () => {
         status: 500
       }
     }
+
     const wrapper = shallowMount(register, {
       mocks: {
         $store: {
@@ -244,26 +400,18 @@ describe('login', () => {
         }
       }
     })
-    const form = wrapper.find('form')
 
-    const button = form.find('button')
-    form.find('[placeholder="Username"]').setValue('username')
-    form.find('[placeholder="Username"]').trigger('keyup', { key: 1 })
+    wrapper.vm.username = 'test'
+    wrapper.vm.usernameTaken = false
 
-    // Wait a second for the check to be triggered
-    await new Promise(resolve => {
-      setTimeout(resolve, 100)
-    })
-    await flushPromises()
+    wrapper.vm.password = 'test'
+    wrapper.vm.password2 = 'test'
 
-    form.find('[placeholder="Password"]').setValue('password')
-    form.find('[placeholder="Retype password"]').setValue('password')
-    form.find('[placeholder="Email"]').setValue('email@email.com')
-    form.find('[placeholder="First name"]').setValue('name1')
-    form.find('[placeholder="Last name"]').setValue('name2')
+    wrapper.vm.email = 'sdafasdf@dfsdf.com'
+    wrapper.vm.firstName = 'sasdf'
+    wrapper.vm.lastName = 'sadasdf'
 
-    form.trigger('submit')
-    expect(button.attributes('disabled')).toBe('disabled')
+    wrapper.find('form').trigger('submit')
 
     await flushPromises()
 
@@ -275,12 +423,14 @@ describe('login', () => {
         status: 422
       }
     }
-    form.trigger('submit')
+
+    wrapper.find('form').trigger('submit')
+
     await flushPromises()
     expect(wrapper.find('.error-message').text()).toBe('Unknown error')
 
     mockError = new Error('Random error')
-    form.trigger('submit')
+    wrapper.find('form').trigger('submit')
     await flushPromises()
     expect(wrapper.find('.error-message').text()).toBe('Connection error')
   })

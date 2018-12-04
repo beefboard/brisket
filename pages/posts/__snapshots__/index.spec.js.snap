@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`posts/index.vue renders properly 1`] = `
+<div class="page-container">
+  <div class="filters">
+    <div>Filter</div>
+    <div><input type="radio" name="filter" value="new" id="new"> New
+      <div><input type="radio" name="filter" value="pinned" id="pinned"> Pinned
+      </div>
+      <div><input type="radio" name="filter" value="unapproved" id="unapproved"> Unapproved
+      </div>
+    </div>
+  </div>
+  <div class="posts">
+    <post-stub post="[object Object]" class="browse-post"></post-stub>
+    <post-stub post="[object Object]" class="browse-post"></post-stub>
+    <post-stub post="[object Object]" class="browse-post"></post-stub>
+  </div>
+</div>
+`;

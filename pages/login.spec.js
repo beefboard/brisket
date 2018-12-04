@@ -105,6 +105,7 @@ describe('login', () => {
     const usernameInput = wrapper.find('[placeholder="Username"]')
     const passwordInput = wrapper.find('[placeholder="Password"]')
 
+    // Test unauthorised
     mockError = {
       response: {
         status: 401
@@ -119,6 +120,8 @@ describe('login', () => {
     expect(wrapper.find('.error').html()).toContain(
       'Invalid username or password'
     )
+    // The password should be set to none
+    expect(wrapper.vm.password).toBe('')
 
     mockError = {
       response: {
@@ -141,5 +144,55 @@ describe('login', () => {
     await flushPromises()
 
     expect(wrapper.find('.error').html()).toContain('Unknown error')
+
+    mockError = mockError = {
+      response: {
+        status: -1
+      }
+    }
+    usernameInput.setValue('test')
+    passwordInput.setValue('test')
+    wrapper.find('form').trigger('submit')
+
+    await flushPromises()
+
+    expect(wrapper.find('.error').html()).toContain('Unknown error')
+  })
+
+  it('should set title to "Login - Beefboard"', () => {
+    const wrapper = shallowMount(login)
+    const headData = wrapper.vm.$options.head()
+
+    expect(headData.title).toBe('Login - Beefboard')
+  })
+
+  it('should redirect to home if already logged in', () => {
+    const wrapper = shallowMount(login)
+
+    const redirect = jest.fn()
+    const mockStore = {
+      state: {
+        auth: {
+          username: 'sdfsdf'
+        }
+      }
+    }
+
+    wrapper.vm.$options.asyncData({ redirect, store: mockStore })
+    expect(redirect).toHaveBeenCalledWith('/')
+  })
+
+  it('should not redirect if not logged in', () => {
+    const wrapper = shallowMount(login)
+
+    const redirect = jest.fn()
+    const mockStore = {
+      state: {
+        auth: null
+      }
+    }
+
+    wrapper.vm.$options.asyncData({ redirect, store: mockStore })
+    expect(redirect).not.toHaveBeenCalled()
   })
 })

@@ -66,17 +66,14 @@ export default {
     }
   },
 
-  async asyncData({ store, error, route }) {
+  async asyncData({ store, error }) {
     try {
       const posts = await store.dispatch('getPosts')
       posts.sort((p1, p2) => {
         return p2.date.localeCompare(p1.date)
       })
 
-      let pinned =
-        posts.filter(post => {
-          return post.pinned
-        }) || []
+      let pinned = posts.filter(post => post.pinned)
 
       let pinnedTruncated = false
       if (pinned.length > 2) {
@@ -98,12 +95,7 @@ export default {
       error('Error loading posts')
     }
   },
-  watchQuery: true,
-  methods: {
-    async viewNew() {
-      this.$router.push({ path: '/', query: { approved: false } })
-    }
-  }
+  watchQuery: true
 }
 </script>
 
