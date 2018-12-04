@@ -2,9 +2,9 @@
 
 export NODE_ENV='production'
 if [ -n "$API_URL" ]; then
-  export API_URL="api.test.beefboard.mooo.com"
-else
   export API_URL=$API_URL
+else
+  export API_URL="https://api.test.beefboard.mooo.com"
 fi
 
 echo $API_URL
