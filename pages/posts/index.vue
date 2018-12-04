@@ -4,6 +4,7 @@
       <div>Filter</div>
       <div>
         <input
+          id="new"
           v-model="search"
           type="radio"
           name="filter"
@@ -11,14 +12,16 @@
           @change="queryChange"> New
         <div>
           <input
+            id="pinned"
             v-model="search"
             type="radio"
             name="filter"
             value="pinned"
             @change="queryChange"> Pinned
         </div>
-        <div v-if="admin">
+        <div v-if="isAdmin">
           <input
+            id="unapproved"
             v-model="search"
             type="radio"
             name="filter"
@@ -48,7 +51,6 @@ export default {
   data() {
     return {
       posts: [],
-      admin: false,
       search: 'new'
     }
   },
@@ -62,18 +64,22 @@ export default {
   async asyncData({ route, error, store }) {
     try {
       const query = route.query
-      const admin = store.state.auth && store.state.auth.admin
       let posts = await store.dispatch('getPosts', query)
 
       let search = 'new'
-      if (query.pinned === 'true' || query.pinned == true) {
+
+      if (query.pinned != undefined && query.pinned.toString() === 'true') {
         posts = posts.filter(post => {
           return post.pinned
         })
         search = 'pinned'
-      } else if (query.approved === 'false' || query.approved == false) {
+      } else if (
+        query.approved != undefined &&
+        query.approved.toString() === 'false'
+      ) {
         search = 'unapproved'
       } else {
+        // Don't show posts any posts as pinned
         posts.forEach(post => {
           post.pinned = false
         })
@@ -85,7 +91,6 @@ export default {
 
       return {
         posts: posts,
-        admin: admin,
         search: search
       }
     } catch (e) {
@@ -94,6 +99,11 @@ export default {
     }
   },
   watchQuery: true,
+  computed: {
+    isAdmin() {
+      return this.$store.state.auth && this.$store.state.auth.admin
+    }
+  },
   methods: {
     async queryChange() {
       const query = {}
