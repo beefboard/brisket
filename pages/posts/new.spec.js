@@ -44,7 +44,7 @@ describe('posts/new.vue', () => {
 
   it('renders properly', () => {
     const wrapper = renderLayout()
-    expect(wrapper).toMatchSnapshot()
+    expect(wrapper.html()).toMatchSnapshot()
   })
 
   it('should set title to "New post - Beefboard"', () => {

@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`posts/_id.vue renders properly 1`] = `
+<div class="page-container">
+  <div class="page">
+    <div class="top"><a to="/" class="back">
+        <div icon="[object Object]"></div>Back to posts
+      </a>
+      <div class="buttons">
+        <!---->
+        <!---->
+      </div>
+    </div>
+    <postdetails-stub post="[object Object]"></postdetails-stub>
+  </div>
+  <div></div>
+</div>
+`;

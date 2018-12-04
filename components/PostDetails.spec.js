@@ -26,6 +26,7 @@ describe('PostDetails', () => {
         date: new Date(2017, 11, 28).toISOString(),
         approved: false,
         pinned: false,
+        numImages: 3,
         votes: { grade: 1 }
       }
     }
@@ -39,7 +40,7 @@ describe('PostDetails', () => {
           dispatch: jest.fn(),
           state: {
             auth: mockAuth,
-            baseURL: 'https://test.com'
+            API_URL: 'https://test.com'
           }
         },
         $router: {
