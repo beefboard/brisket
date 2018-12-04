@@ -7,14 +7,14 @@
           class="images">
           <gallery
             :images="images"
-            :index="index"
-            @close="index = null"/>
+            :index="clickedImage"
+            @close="clickedImage = null"/>
           <div
             v-for="(image, imageIndex) in images"
             :key="imageIndex"
             :style="{ backgroundImage: `url(${image})`}"
             class="image"
-            @click="index = imageIndex"
+            @click="clickedImage = imageIndex"
           />
         </div>
         <div class="top">
@@ -48,7 +48,7 @@
           @click="post">Submit</button>
       </div>
     </div>
-    <v-modal/>
+    <v-dialog/>
   </div>
 </template>
 
@@ -59,6 +59,7 @@ export default {
     return {
       title: '',
       content: '',
+      clickedImage: null,
       files: [],
       images: [],
       loading: false
@@ -81,17 +82,18 @@ export default {
     async post() {
       this.loading = true
       try {
-        const id = await this.store.dispatch('newPost', {
+        const id = await this.$store.dispatch('newPost', {
           title: this.title,
           content: this.content,
           images: this.files
         })
 
         this.$router.push(`/posts/${id}`)
+        return
       } catch (e) {
         this.$modal.show('dialog', {
           title: 'Posting error',
-          text: 'Unknown error uploading post',
+          text: 'Unknown error uploading post, please try again',
           buttons: [
             {
               title: 'Ok'
@@ -99,6 +101,7 @@ export default {
           ]
         })
       }
+
       this.loading = false
     },
 
