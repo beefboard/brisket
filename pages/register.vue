@@ -78,6 +78,7 @@ export default {
     }
     return true
   },
+
   computed: {
     validForm() {
       return (
@@ -167,17 +168,7 @@ export default {
       }
     },
 
-    async checkUsername() {
-      if (!this.username) {
-        return
-      }
-
-      if (this.invalidUser) {
-        return
-      }
-
-      const username = this.username
-      await new Promise(resolve => setTimeout(resolve, 100))
+    async doUsernameCheck(username) {
       if (this.username != username) {
         return
       }
@@ -194,6 +185,21 @@ export default {
           }
         }
       }
+    },
+
+    checkUsername() {
+      if (!this.username) {
+        return
+      }
+
+      if (this.invalidUser) {
+        return
+      }
+
+      const username = this.username
+      setTimeout(() => {
+        this.doUsernameCheck(username)
+      }, 100)
     }
   }
 }

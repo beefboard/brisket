@@ -7,14 +7,14 @@
           class="images">
           <gallery
             :images="images"
-            :index="index"
-            @close="index = null"/>
+            :index="clickedImage"
+            @close="clickedImage = null"/>
           <div
             v-for="(image, imageIndex) in images"
             :key="imageIndex"
-            :style="{ backgroundImage: 'url(' + image + ')', width: '300px', height: '200px' }"
+            :style="{ backgroundImage: `url(${image})`}"
             class="image"
-            @click="index = imageIndex"
+            @click="clickedImage = imageIndex"
           />
         </div>
         <div class="top">
@@ -29,23 +29,26 @@
             type="file"
             class="files"
             multiple
-            @change="handleFilesUpload()">
+            @change="handleAttachFiles()">
           <button
             class="beefbutton upload-button"
-            @click="uploadFile">Attach photo(s)</button>
+            @click="attachFileClicked">Attach photo(s)</button>
         </div>
         <textarea-autosize
           v-model="content"
           :min-height="300"
+          class="content"
           placeholder="Type something here..."
           style="border: none; outline: none; font-size: 1rem;"
           @blur.native="onBlurTextarea"
         />
         <button
+          :disabled="submitDisabled"
           class="beefbutton submit-button"
           @click="post">Submit</button>
       </div>
     </div>
+    <v-dialog/>
   </div>
 </template>
 
@@ -56,8 +59,10 @@ export default {
     return {
       title: '',
       content: '',
+      clickedImage: null,
       files: [],
-      images: []
+      images: [],
+      loading: false
     }
   },
 
@@ -67,36 +72,44 @@ export default {
     }
   },
 
+  computed: {
+    submitDisabled() {
+      return !this.title || !this.content || this.loading
+    }
+  },
+
   methods: {
     async post() {
-      if (!this.title || !this.content) {
+      this.loading = true
+      try {
+        const id = await this.$store.dispatch('newPost', {
+          title: this.title,
+          content: this.content,
+          images: this.files
+        })
+
+        this.$router.push(`/posts/${id}`)
         return
+      } catch (e) {
+        this.$modal.show('dialog', {
+          title: 'Posting error',
+          text: 'Unknown error uploading post, please try again',
+          buttons: [
+            {
+              title: 'Ok'
+            }
+          ]
+        })
       }
 
-      const formData = new FormData()
-      formData.append('title', this.title)
-      formData.append('content', this.content)
-
-      for (const file of this.files) {
-        formData.append('images', file)
-      }
-
-      const response = await this.$axios.post('/v1/posts', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
-      })
-
-      const id = response.data.id
-
-      this.$router.push(`/posts/${id}`)
+      this.loading = false
     },
 
-    uploadFile() {
+    attachFileClicked() {
       this.$refs.files.click()
     },
 
-    handleFilesUpload() {
+    handleAttachFiles() {
       const files = this.$refs.files.files
       for (const file of files) {
         this.images.push(URL.createObjectURL(file))

@@ -4,12 +4,6 @@ export const state = () => ({
   API_URL: process.env.API_URL
 })
 
-export const getters = () => ({
-  API_URL: () => {
-    return
-  }
-})
-
 export const mutations = {
   token(state, data) {
     state.token = data
@@ -25,11 +19,7 @@ export const actions = {
   // state
   async nuxtServerInit(store, context) {
     const token = context.app.$cookies.get('AUTH_TOKEN')
-    const API_URL =
-      process.env.API_URL ||
-      (process.env.NODE_ENV == 'development' && false
-        ? 'http://localhost:2832'
-        : 'https://api.beefboard.mooo.com')
+    const API_URL = process.env.API_URL || 'https://api.test.beefboard.mooo.com'
 
     store.state.token = token || null
     store.state.API_URL = API_URL
@@ -106,6 +96,23 @@ export const actions = {
   async getPost(_, id) {
     const response = await this.$axios.get(`/v1/posts/${id}`)
     return response.data
+  },
+
+  async newPost(_, data) {
+    const formData = new FormData()
+    formData.append('title', data.title)
+    formData.append('content', data.content)
+
+    for (const image of data.images) {
+      formData.append('images', image)
+    }
+
+    const response = await this.$axios.post(`/v1/posts`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+    return response.data.id
   },
 
   async approvePost(_, id) {

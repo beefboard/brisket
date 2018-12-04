@@ -30,6 +30,7 @@ describe('store', () => {
   describe('actions', () => {
     // Resest the mocks
     beforeEach(() => {
+      jest.resetModules()
       mockCookiesStore = {}
       mockStore = new Vuex.Store({
         state: store.state(),
@@ -60,12 +61,25 @@ describe('store', () => {
         await store.actions.nuxtServerInit(mockStore, mockContext)
         expect(mockStore.state.token).toBe('token')
       })
-
       it('should store null if cookie is empty', async () => {
         mockCookiesStore['AUTH_TOKEN'] = undefined
 
         await store.actions.nuxtServerInit(mockStore, mockContext)
         expect(mockStore.state.token).toBe(null)
+      })
+
+      it('should store API_URL from process env', async () => {
+        process.env.API_URL = 'test.test'
+        await store.actions.nuxtServerInit(mockStore, mockContext)
+        expect(mockStore.state.API_URL).toBe('test.test')
+      })
+
+      it('should store API_URL as "https://api.test.beefboard.mooo.com" when not set in env', async () => {
+        delete process.env.API_URL
+        await store.actions.nuxtServerInit(mockStore, mockContext)
+        expect(mockStore.state.API_URL).toBe(
+          'https://api.test.beefboard.mooo.com'
+        )
       })
     })
 
@@ -187,8 +201,72 @@ describe('store', () => {
         })
 
         const post = await mockStore.dispatch('getPost', 'test')
-        expect(post).toBe(mockPost)
+        expect(post).toEqual(mockPost)
         expect(axios.get).toHaveBeenCalledWith('/v1/posts/test')
+      })
+    })
+
+    describe('newPost', () => {
+      function MockForm() {
+        this.append = MockForm.append
+      }
+      MockForm.append = jest.fn()
+
+      // Enable FormData to work in node
+      beforeAll(() => {
+        MockForm.append.mockReset()
+        global.FormData = MockForm
+      })
+
+      afterAll(() => {
+        delete global.FormData
+      })
+
+      it('should send given data as form multipart to API', async () => {
+        const postData = {
+          title: 'test',
+          content: 'test',
+          images: ['image', 'image2']
+        }
+
+        axios.post.mockResolvedValue({
+          data: {
+            id: 'asdasdfadsadsf'
+          }
+        })
+
+        await mockStore.dispatch('newPost', postData)
+        expect(MockForm.append).toHaveBeenCalledWith('title', 'test')
+        expect(MockForm.append).toHaveBeenCalledWith('content', 'test')
+        expect(MockForm.append).toHaveBeenCalledWith('images', 'image')
+        expect(MockForm.append).toHaveBeenCalledWith('images', 'image2')
+
+        expect(axios.post).toHaveBeenCalledWith(
+          '/v1/posts',
+          expect.any(MockForm),
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data'
+            }
+          }
+        )
+      })
+
+      it('should return id from api', async () => {
+        const postData = {
+          title: 'test',
+          content: 'test',
+          images: ['image', 'image2']
+        }
+
+        axios.post.mockResolvedValue({
+          data: {
+            id: 'fgsfgssdhfjasfhasf'
+          }
+        })
+
+        const id = await mockStore.dispatch('newPost', postData)
+        expect(id).toBe('fgsfgssdhfjasfhasf')
       })
     })
 

@@ -7,7 +7,16 @@ exports[`PostDetails renders properly 1`] = `
       <div class="date">Thursday, December 28th 2017</div>
       <div class="info">Awaiting approval</div>
     </div>
-    <!---->
+    <div class="images">
+      <div>
+        <div images="https://test.com/v1/posts/asdfasdf/images/0,https://test.com/v1/posts/asdfasdf/images/1,https://test.com/v1/posts/asdfasdf/images/2" class="gallery"></div>
+        <div options="[object Object]" class="carousel">
+          <div class="carousel-cell"><img src="https://test.com/v1/posts/asdfasdf/images/0" class="carousel-cell-image"></div>
+          <div class="carousel-cell"><img src="https://test.com/v1/posts/asdfasdf/images/1" class="carousel-cell-image"></div>
+          <div class="carousel-cell"><img src="https://test.com/v1/posts/asdfasdf/images/2" class="carousel-cell-image"></div>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="title">test</div>
   <div class="main">

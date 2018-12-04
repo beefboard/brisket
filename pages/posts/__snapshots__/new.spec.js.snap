@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`posts/new.vue renders properly 1`] = `
+<div class="page-container">
+  <div class="form">
+    <div>
+      <!---->
+      <div class="top"><input type="text" placeholder="Title" class="title"> <input id="files" type="file" multiple="multiple" class="files"> <button class="beefbutton upload-button">Attach photo(s)</button></div> <input min-height="300" placeholder="Type something here..." class="content" style="outline: none; font-size: 1rem;"> <button disabled="disabled" class="beefbutton submit-button">Submit</button>
+    </div>
+  </div>
+  <div></div>
+</div>
+`;
