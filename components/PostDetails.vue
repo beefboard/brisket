@@ -14,16 +14,16 @@
         v-if="images.length > 0"
         class="images">
         <no-ssr>
-          <gallery 
-            :images="images" 
-            :index="index" 
-            class="gallery" 
+          <gallery
+            :images="images"
+            :index="index"
+            class="gallery"
             @close="closeImage"/>
-          <flickity 
-            ref="flickity" 
-            :options="flickityOptions" 
+          <flickity
+            ref="flickity"
+            :options="flickityOptions"
             class="carousel">
-            <div 
+            <div
               v-for="(image, imageIndex) in images"
               :key="imageIndex"
               class="carousel-cell">
@@ -71,7 +71,7 @@ export default {
       index: null,
       flickityOptions: {
         initialIndex: 0,
-        prevNextButtons: true,
+        prevNextButtons: this.post.numImages > 1,
         wrapAround: true,
         autoPlay: true,
         draggable: false
@@ -98,6 +98,7 @@ export default {
 .top {
   display: flex;
   flex-direction: row;
+  margin-bottom: 1rem;
 }
 
 .main {
@@ -123,16 +124,20 @@ export default {
 
 .content > div {
   margin: 1rem;
+  word-break: break-all;
+  word-wrap: break-word;
 }
 
 .carousel {
   flex: 1;
   max-width: 30rem;
   height: 15rem;
+  margin-top: 2rem;
   margin-bottom: 2rem;
   overflow: hidden;
 }
 .carousel-cell {
+  cursor: zoom-in;
   width: 66%;
   height: 15rem;
   margin-right: 10px;
@@ -149,9 +154,9 @@ export default {
   .top {
     flex-direction: column;
   }
-  .image {
-    width: 7rem !important;
-    height: 5rem !important;
+  .carousel {
+    max-width: unset;
+    width: 100%;
   }
 }
 
@@ -178,18 +183,5 @@ export default {
   display: flex;
   justify-content: flex-end;
   flex-wrap: wrap;
-}
-
-.image {
-  cursor: zoom-in;
-  width: 15rem !important;
-  height: 10rem !important;
-  float: left;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center center;
-  border: 1px solid #ebebeb;
-  margin: 1rem;
-  box-shadow: 0 3px 7px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.22);
 }
 </style>

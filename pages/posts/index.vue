@@ -150,10 +150,11 @@ export default {
   .posts {
     flex-direction: column;
     flex-wrap: unset;
+    justify-content: stretch;
   }
 
   .browse-post {
-    width: unset;
+    width: 100%;
     margin-left: 0rem;
     margin-right: 0rem;
   }

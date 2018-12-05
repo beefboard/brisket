@@ -201,4 +201,34 @@ describe('PostDetails', () => {
 
     expect(wrapper.vm.index).toBe(null)
   })
+
+  test('arrows on image slideshow should be set to false if only 1 image', () => {
+    let wrapper = renderLayout({
+      title: 'test',
+      id: 'asdfasdf',
+      content: 'sadfasdfsadf\nsdsdsdg',
+      author: 'slfkgjsdklfg',
+      date: new Date(2017, 11, 28).toISOString(),
+      approved: false,
+      pinned: false,
+      numImages: 1,
+      votes: { grade: 1 }
+    })
+
+    expect(wrapper.vm.flickityOptions.prevNextButtons).toBe(false)
+
+    wrapper = renderLayout({
+      title: 'test',
+      id: 'asdfasdf',
+      content: 'sadfasdfsadf\nsdsdsdg',
+      author: 'slfkgjsdklfg',
+      date: new Date(2017, 11, 28).toISOString(),
+      approved: false,
+      pinned: false,
+      numImages: 2,
+      votes: { grade: 1 }
+    })
+
+    expect(wrapper.vm.flickityOptions.prevNextButtons).toBe(true)
+  })
 })
