@@ -44,7 +44,7 @@ build:
   stage: build
   image: docker:latest
   dependencies:
-    - acceptence
+    - acceptance
   only:
     - development
     - master
