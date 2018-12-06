@@ -1,22 +1,33 @@
-# web
+# Brisket
 
 > Web frontend for beefboard
 
-## Build Setup
+## About
 
-``` bash
-# install dependencies
-$ yarn install
+Developed in `Nuxt.js` brisket aims to be a fast and interactive frontend for beefboard.
 
-# serve with hot reload at localhost:3000
-$ yarn run dev
+It employs server-side rendering, with means the first page paint is faster than using
+any client side rendered framework.
 
-# build for production and launch server
-$ yarn run build
-$ yarn start
+## Developing
 
-# generate static project
-$ yarn run generate
-```
+`npm install` to install packages.
 
-For detailed explanation on how things work, checkout [Nuxt.js docs](https://nuxtjs.org).
+### Running
+
+`npm run dev` can be used to run the server in development mode. By default
+`https://api.beefboard.mooo.com` is used as the API server. But this can be
+set with `export API_URL=xxx`
+
+### Unit testing
+
+`npm test` will run extensive unit test suite, which tests functionality
+of all pages and components.
+
+### Acceptence testing
+
+`npm run acceptence` ensures that the application runs and provides basic functionality.
+It is more of a sanity test, as unit tests cover all core functionality
+
+Acceptence tests can only be run on a production server. To build a production server
+run `npm run build`

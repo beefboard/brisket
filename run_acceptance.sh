@@ -19,7 +19,7 @@ kill_server() {
 trap kill_server SIGINT SIGTERM
 
 export ACCEPTENCE_SERVER=$ACCEPTENCE_SERVER
-npm run jest -- --config jest.acceptence.config.js
+npm run jest -- --config jest.acceptance.config.js
 EXIT_CODE=$?
 kill_server
 
