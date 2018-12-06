@@ -108,6 +108,8 @@ describe('acceptence', () => {
     await page.goto(`${HOST}/login`)
     await page.click('.menu-button')
 
+    await page.waitFor(1000)
+
     const screen = await page.screenshot()
     expect(screen).toMatchImageSnapshot()
   })

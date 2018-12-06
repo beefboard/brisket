@@ -31,6 +31,9 @@ lint:
 acceptance:
   stage: acceptance
   image: buildkite/puppeteer
+  artifacts:
+    paths:
+      - __image_snapshots__/
   script:
     - npm run build
     - if [[ "$CI_COMMIT_REF_NAME" == "development" ]]; then
