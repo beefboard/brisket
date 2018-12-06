@@ -5,7 +5,7 @@ module.exports = {
     '^~/(.*)$': '<rootDir>/$1',
     '^~~/(.*)$': '<rootDir>/$1'
   },
-  testPathIgnorePatterns: ['acceptence.spec.js'],
+  testPathIgnorePatterns: ['acceptance.spec.js'],
   transform: {
     '^.+\\.js$': '<rootDir>/node_modules/babel-jest',
     '.*\\.(vue)$': '<rootDir>/node_modules/vue-jest'
