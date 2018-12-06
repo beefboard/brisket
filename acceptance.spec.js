@@ -71,7 +71,7 @@ describe('acceptence', () => {
     expect(await page.title()).toBe('Home - Beefboard')
   })
 
-  it('renders login layout properly', async () => {
+  test('login page matches snapshot', async () => {
     browser = await createBrowser()
     const page = await createPage(true)
     await page.goto(`${HOST}/login`)
@@ -83,7 +83,7 @@ describe('acceptence', () => {
     })
   })
 
-  it('renders registration layout properly', async () => {
+  test('registration page matches snapshot', async () => {
     browser = await createBrowser()
     const page = await createPage(true)
     await page.goto(`${HOST}/register`)
@@ -95,7 +95,7 @@ describe('acceptence', () => {
     })
   })
 
-  it('renders not found page properly', async () => {
+  it('not found page matches snapshot', async () => {
     browser = await createBrowser()
     const page = await createPage(true)
     await page.goto(`${HOST}/lksadfjhsfgdhfs`)
@@ -107,7 +107,7 @@ describe('acceptence', () => {
     })
   })
 
-  it('renders mobile view properly', async () => {
+  it('mobile view matches snapshot', async () => {
     browser = await createBrowser()
     const page = await createPage(true)
 
@@ -117,6 +117,7 @@ describe('acceptence', () => {
     await page.goto(`${HOST}/login`)
     await page.click('.menu-button')
 
+    // Wait for drawer to open
     await page.waitFor(1000)
 
     const screen = await page.screenshot()
