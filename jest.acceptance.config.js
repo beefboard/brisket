@@ -5,5 +5,5 @@ module.exports = {
     '^~/(.*)$': '<rootDir>/$1',
     '^~~/(.*)$': '<rootDir>/$1'
   },
-  testRegex: 'acceptence.spec.js?$'
+  testRegex: 'acceptance.spec.js?$'
 }
