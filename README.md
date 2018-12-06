@@ -24,6 +24,9 @@ set with `export API_URL=xxx`
 `npm test` will run extensive unit test suite, which tests functionality
 of all pages and components.
 
+Snapshot testing is used throughout the tests, and can be updated with
+`npm test -- - u`
+
 ### Acceptence testing
 
 `npm run acceptence` ensures that the application runs and provides basic functionality.
@@ -31,3 +34,5 @@ It is more of a sanity test, as unit tests cover all core functionality
 
 Acceptence tests can only be run on a production server. To build a production server
 run `npm run build`
+
+`npm run acceptance-update` will update image snapshots if required
