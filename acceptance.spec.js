@@ -1,5 +1,8 @@
 const puppeteer = require('puppeteer')
 const request = require('supertest')
+const { toMatchImageSnapshot } = require('jest-image-snapshot')
+
+expect.extend({ toMatchImageSnapshot })
 
 const HOST = process.env.ACCEPTENCE_SERVER || 'http://localhost:3000'
 
@@ -7,7 +10,7 @@ jest.setTimeout(60000)
 
 let browser = null
 
-async function createBrowser() {
+async function createBrowser(size) {
   return await puppeteer.launch({
     slowMo: 0,
     headless: true,
@@ -21,13 +24,15 @@ async function createBrowser() {
   })
 }
 
-async function createPage() {
+async function createPage(images = false) {
   const page = await browser.newPage()
-  await page.setRequestInterception(true)
-  page.on('request', request => {
-    if (request.resourceType() === 'image') request.abort()
-    else request.continue()
-  })
+  if (!images) {
+    await page.setRequestInterception(true)
+    page.on('request', request => {
+      if (request.resourceType() === 'image') request.abort()
+      else request.continue()
+    })
+  }
 
   return page
 }
@@ -64,6 +69,62 @@ describe('acceptence', () => {
     await page.goto(`${HOST}`)
 
     expect(await page.title()).toBe('Home - Beefboard')
+  })
+
+  test('login page matches snapshot', async () => {
+    browser = await createBrowser()
+    const page = await createPage(true)
+    await page.goto(`${HOST}/login`)
+
+    const screen = await page.screenshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
+  })
+
+  test('registration page matches snapshot', async () => {
+    browser = await createBrowser()
+    const page = await createPage(true)
+    await page.goto(`${HOST}/register`)
+
+    const screen = await page.screenshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
+  })
+
+  it('not found page matches snapshot', async () => {
+    browser = await createBrowser()
+    const page = await createPage(true)
+    await page.goto(`${HOST}/lksadfjhsfgdhfs`)
+
+    const screen = await page.screenshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
+  })
+
+  it('mobile view matches snapshot', async () => {
+    browser = await createBrowser()
+    const page = await createPage(true)
+
+    // iPhone 7 size
+    await page.setViewport({ height: 667, width: 357 })
+
+    await page.goto(`${HOST}/login`)
+    await page.click('.menu-button')
+
+    // Wait for drawer to open
+    await page.waitFor(1000)
+
+    const screen = await page.screenshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
   })
 
   it('allows login, shows profile after login, logout navigates back to home', async () => {

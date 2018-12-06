@@ -2,8 +2,6 @@ import { shallowMount } from '@vue/test-utils'
 import login from './login'
 import flushPromises from 'flush-promises'
 
-jest.mock('axios')
-
 describe('login', () => {
   test('mounts properly', () => {
     const wrapper = shallowMount(login)

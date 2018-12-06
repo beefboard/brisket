@@ -81,3 +81,6 @@ dist
 .idea
 
 .DS_Store
+
+# Image snapshots
+__diff_output__

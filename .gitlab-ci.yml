@@ -2,7 +2,7 @@ image: node:10
 
 stages:
   - test
-  - acceptence
+  - acceptance
   - build
   - deploy
 
@@ -28,9 +28,12 @@ lint:
   script:
     - npm run lint
 
-acceptence:
-  stage: acceptence
+acceptance:
+  stage: acceptance
   image: buildkite/puppeteer
+  artifacts:
+    paths:
+      - __image_snapshots__/
   script:
     - npm run build
     - if [[ "$CI_COMMIT_REF_NAME" == "development" ]]; then
@@ -38,13 +41,13 @@ acceptence:
       else
         export API_URL="https://api.beefboard.mooo.com";
       fi
-    - npm run acceptence
+    - npm run acceptance
 
 build:
   stage: build
   image: docker:latest
   dependencies:
-    - acceptence
+    - acceptance
   only:
     - development
     - master
