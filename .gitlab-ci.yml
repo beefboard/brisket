@@ -2,7 +2,7 @@ image: node:10
 
 stages:
   - test
-  - acceptence
+  - acceptance
   - build
   - deploy
 
@@ -28,8 +28,8 @@ lint:
   script:
     - npm run lint
 
-acceptence:
-  stage: acceptence
+acceptance:
+  stage: acceptance
   image: buildkite/puppeteer
   script:
     - npm run build
@@ -38,7 +38,7 @@ acceptence:
       else
         export API_URL="https://api.beefboard.mooo.com";
       fi
-    - npm run acceptence
+    - npm run acceptance
 
 build:
   stage: build
