@@ -77,7 +77,10 @@ describe('acceptence', () => {
     await page.goto(`${HOST}/login`)
 
     const screen = await page.screenshot()
-    expect(screen).toMatchImageSnapshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
   })
 
   it('renders registration layout properly', async () => {
@@ -86,7 +89,10 @@ describe('acceptence', () => {
     await page.goto(`${HOST}/register`)
 
     const screen = await page.screenshot()
-    expect(screen).toMatchImageSnapshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
   })
 
   it('renders not found page properly', async () => {
@@ -95,7 +101,10 @@ describe('acceptence', () => {
     await page.goto(`${HOST}/lksadfjhsfgdhfs`)
 
     const screen = await page.screenshot()
-    expect(screen).toMatchImageSnapshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
   })
 
   it('renders mobile view properly', async () => {
@@ -111,7 +120,10 @@ describe('acceptence', () => {
     await page.waitFor(1000)
 
     const screen = await page.screenshot()
-    expect(screen).toMatchImageSnapshot()
+    expect(screen).toMatchImageSnapshot({
+      failureThreshold: '0.03',
+      failureThresholdType: 'percent'
+    })
   })
 
   it('allows login, shows profile after login, logout navigates back to home', async () => {
